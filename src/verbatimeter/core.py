@@ -271,7 +271,6 @@ def verify(
     count_tokens=None,
     use_color: bool | None = None,
     print_stats: bool = True,
-    return_result: bool = False,
     file=None,
 ):
     def decorator(fn):
@@ -295,7 +294,7 @@ def verify(
             if print_stats:
                 stream = file or sys.stdout
                 print(render_result(result, use_color=use_color, stream=stream), file=stream)
-            return AnnotatedAnswer(answer, result) if return_result else answer
+            return AnnotatedAnswer(answer, result)
 
         return wrapper
 

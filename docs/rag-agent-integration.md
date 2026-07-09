@@ -82,7 +82,9 @@ programmatic control.
 
 Wrap your generation function. The source is resolved from the runtime `context`
 argument (set `source_arg` to whatever your function calls it). Highlighting +
-stats print automatically, and the answer passes through unchanged.
+stats print automatically (pass `print_stats=False` for a quiet mode), and the
+answer comes back still usable as a plain string, with the `CheckResult`
+attached as `.result`.
 
 Pass `scope="quotes"` — verbatimeter defaults to scanning the whole answer, but
 here you only want to check the model's `"…"` quotations.
@@ -90,13 +92,13 @@ here you only want to check the model's `"…"` quotations.
 ```python
 from verbatimeter import verify
 
-@verify(source_arg="context", scope="quotes", return_result=True)
+@verify(source_arg="context", scope="quotes")
 def generate(query: str, context: str) -> str:
     return call_your_llm(system=SYSTEM_PROMPT, context=context, query=query)
 
 context = retrieve(query)
 answer = generate(query, context=context)         # prints the verbatim report
-# answer.result is a CheckResult you can still inspect (return_result=True)
+# answer.result is a CheckResult you can inspect or gate on
 ```
 
 ### Option B — explicit check (for gating)

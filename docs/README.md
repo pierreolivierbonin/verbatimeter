@@ -27,3 +27,4 @@ as ADRs (Architecture Decision Records). Each file is one decision, tagged
 | [ADR-0012](0012-match-window-rouge-and-reporting-fixes.md) | ROUGE-L over the full match window; punctuation-neutral fragments; stream-aware colour | Accepted |
 | [ADR-0013](0013-explicit-inputs-single-tokenizer.md) | Explicit CLI file flags (no path sniffing); `--encoding` removed, bundled tokenizer only | Accepted |
 | [ADR-0014](0014-functools-cache-memoization.md) | Compute-once values memoized with `functools.cache` | Accepted |
+| [ADR-0015](0015-decorator-always-returns-result.md) | `verify` always returns the annotated answer; `return_result` removed, `print_stats` is the quiet-mode switch | Accepted |

@@ -131,10 +131,12 @@ generate("...", context=retrieved_passages)
 ```
 
 The wrapped function's return value is the answer; the source is resolved from a
-static `source=` and/or a runtime keyword argument (runtime wins). Highlighting
-and stats print as a side effect and the original answer is returned unchanged
-(pass `return_result=True` to also get the `CheckResult`). Omit `scope="quotes"`
-to check the whole answer.
+static `source=` and/or a runtime argument (runtime wins). Highlighting and stats
+print as a side effect — pass `print_stats=False` for a quiet mode — and the
+answer comes back as a `str` subclass carrying the full measurement on
+`.result` (a `CheckResult`), so existing string-handling code is unaffected and
+the numbers are always one attribute away. Omit `scope="quotes"` to check the
+whole answer.
 
 Integrating with a retrieval-augmented-generation agent? See
 [docs/rag-agent-integration.md](docs/rag-agent-integration.md).

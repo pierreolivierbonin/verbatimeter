@@ -252,13 +252,28 @@ def test_decorator_static_source():
 
     out = gen()
     assert out == "alpha beta gamma"
+    assert isinstance(out, AnnotatedAnswer)
+    assert out.result.total_differing_tokens == 0
     assert "matched" in sink.getvalue()
+
+
+def test_decorator_quiet_mode_still_returns_result():
+    sink = io.StringIO()
+
+    @verify(source="alpha beta gamma delta", print_stats=False, file=sink)
+    def gen():
+        return "alpha beta gamma"
+
+    out = gen()
+    assert sink.getvalue() == ""
+    assert isinstance(out, AnnotatedAnswer)
+    assert out.result.total_differing_tokens == 0
 
 
 def test_decorator_runtime_kwarg_wins():
     sink = io.StringIO()
 
-    @verify(source="unrelated text here", source_arg="context", file=sink, return_result=True)
+    @verify(source="unrelated text here", source_arg="context", file=sink)
     def gen(context=None):
         return "alpha beta gamma delta"
 
@@ -270,7 +285,7 @@ def test_decorator_runtime_kwarg_wins():
 def test_decorator_positional_source_is_checked():
     sink = io.StringIO()
 
-    @verify(source_arg="context", file=sink, return_result=True)
+    @verify(source_arg="context", file=sink)
     def gen(prompt, context=None):
         return "alpha beta gamma"
 
