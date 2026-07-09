@@ -1,0 +1,70 @@
+[project]
+name = "verbatimeter"
+dynamic = ["version"]
+description = "Deterministically measure how much of a source text a generation reuses, verbatim or verbatim-paraphrased — highlight matched vs. differing words, count differing tokens, and optionally verify an LLM's quotations."
+readme = "README.md"
+requires-python = ">=3.10"
+license = "MIT"
+license-files = ["LICENSE", "THIRD_PARTY_NOTICES.md"]
+authors = [{ name = "Pierre-Olivier Bonin" }]
+dependencies = ["tiktoken>=0.5"]
+keywords = [
+    "verbatim",
+    "text-reuse",
+    "paraphrase",
+    "extractiveness",
+    "hallucination",
+    "llm",
+    "rag",
+    "evaluation",
+    "rouge",
+    "quotation",
+]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Environment :: Console",
+    "Intended Audience :: Developers",
+    "Intended Audience :: Science/Research",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+    "Topic :: Text Processing :: Linguistic",
+]
+
+[project.urls]
+Homepage = "https://github.com/pierreolivierbonin/verbatimeter"
+Repository = "https://github.com/pierreolivierbonin/verbatimeter"
+Issues = "https://github.com/pierreolivierbonin/verbatimeter/issues"
+
+[dependency-groups]
+dev = ["pytest", "ruff", "ty", "pre-commit"]
+
+[project.scripts]
+verbatimeter = "verbatimeter:main"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/verbatimeter"]
+
+[tool.hatch.version]
+path = "src/verbatimeter/__init__.py"
+
+[tool.ruff]
+line-length = 100
+
+[tool.ty.src]
+exclude = ["examples/openai_example.py"]
+
+[tool.ty.environment]
+extra-paths = ["profiling"]
+
+[tool.ruff.lint.per-file-ignores]
+"examples/**" = ["E402", "E731"]
+"tests/**" = ["E731"]
