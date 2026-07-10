@@ -137,6 +137,37 @@ verbatimeter --source-file source.txt --answer-file answer.txt --ngram 5
   (also a `palette=` keyword on `render_words`, `render_result`, and `verify`);
   `--json` emits machine-readable results.
 
+## Enforcement
+
+Measure by default — enforce when asked. Every surface reports and exits 0
+unless a verdict is requested; the exit code then becomes a branch point, and
+the consequence is yours to choose:
+
+```bash
+# hard gate — a fabricated quotation blocks the pipeline
+verbatimeter --source-file ctx.txt --answer-file ans.txt --quotes --fail && publish
+
+# fallback — retry generation until the quotations check out
+until verbatimeter --source-file ctx.txt --answer-file ans.txt --quotes --fail; do
+  regenerate_answer > ans.txt
+done
+
+# route — clean answers ship, dirty ones go to human review
+verbatimeter --source-file ctx.txt --answer-file ans.txt --quotes --fail || mv ans.txt review-queue/
+```
+
+The same verdict is available in Python without exit codes:
+
+```python
+answer = generate(question, context=ctx)
+if answer.result.total_differing_tokens > 0:
+    answer = regenerate_with_warning(question, ctx)
+```
+
+Because the check is deterministic, the gate never flakes: the same answer
+produces the same verdict every time, and when it fails, the highlighted words
+identify exactly which quotation broke and which words were fabricated.
+
 ## Library
 
 ```python
