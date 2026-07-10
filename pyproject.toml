@@ -67,6 +67,9 @@ build-backend = "hatchling.build"
 [tool.hatch.build.targets.wheel]
 packages = ["src/verbatimeter"]
 
+[tool.hatch.build.targets.sdist]
+only-include = ["src", "README.md", "LICENSE", "THIRD_PARTY_NOTICES.md", "pyproject.toml"]
+
 [tool.hatch.version]
 path = "src/verbatimeter/__init__.py"
 
