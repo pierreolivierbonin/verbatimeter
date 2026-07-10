@@ -11,7 +11,7 @@ authors:
   - family-names: Bonin
     given-names: Pierre-Olivier
 license: MIT
-version: 0.1.2.post1
+version: 0.1.2.post2
 repository-code: https://github.com/pierreolivierbonin/verbatimeter
 keywords:
   - verbatim
