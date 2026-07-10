@@ -2,6 +2,21 @@
   <img src="docs/assets/logo.svg" alt="verbatimeter — a pixel-art V in green blocks with one red glitch block, above the name in letterspaced capitals" width="240">
 </p>
 
+<p align="center">
+  <a href="#demo">Demo</a> ·
+  <a href="#install">Install</a> ·
+  <a href="#quickstart">Quickstart</a> ·
+  <a href="#cli">CLI</a> ·
+  <a href="#enforcement">Enforcement</a> ·
+  <a href="#accessibility">Accessibility</a> ·
+  <a href="#library">Library</a> ·
+  <a href="#decorator">Decorator</a> ·
+  <a href="#tokenizer">Tokenizer</a> ·
+  <a href="#performance">Performance</a> ·
+  <a href="#sample-text">Sample text</a> ·
+  <a href="#design">Design</a>
+</p>
+
 LLMs fabricate, and they fabricate fluently — an answer that claims to be
 grounded in a source cannot be taken on trust. verbatimeter verifies the
 claim: give it an AI-generated text and the source it should be grounded in,
