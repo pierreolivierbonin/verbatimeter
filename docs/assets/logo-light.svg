@@ -1,11 +1,13 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 360 100" font-family="system-ui,-apple-system,'Segoe UI',sans-serif">
-  <text x="180" y="46" text-anchor="middle" font-size="40" font-weight="750" letter-spacing="-1.5" fill="#111827">verbatimeter</text>
-  <rect x="60" y="60" width="240" height="7" rx="3.5" fill="#cbd5e1"/>
-  <rect x="70" y="76" width="92" height="7" rx="3.5" fill="#16a34a"/>
-  <rect x="172" y="76" width="30" height="7" rx="3.5" fill="#dc2626"/>
-  <rect x="212" y="76" width="78" height="7" rx="3.5" fill="#16a34a"/>
-  <line x1="78" y1="67" x2="74" y2="76" stroke="#16a34a" stroke-width="2"/>
-  <line x1="154" y1="67" x2="150" y2="76" stroke="#16a34a" stroke-width="2"/>
-  <line x1="220" y1="67" x2="216" y2="76" stroke="#16a34a" stroke-width="2"/>
-  <line x1="290" y1="67" x2="286" y2="76" stroke="#16a34a" stroke-width="2"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 150" font-family="system-ui,-apple-system,'Segoe UI',sans-serif">
+  <g fill="#94a3b8">
+    <rect x="40" y="16" width="20" height="16" rx="4"/><rect x="64" y="16" width="20" height="16" rx="4"/><rect x="88" y="16" width="20" height="16" rx="4"/><rect x="112" y="16" width="20" height="16" rx="4"/><rect x="136" y="16" width="20" height="16" rx="4"/><rect x="160" y="16" width="20" height="16" rx="4"/><rect x="184" y="16" width="20" height="16" rx="4"/><rect x="208" y="16" width="20" height="16" rx="4"/><rect x="232" y="16" width="20" height="16" rx="4"/><rect x="256" y="16" width="20" height="16" rx="4"/>
+  </g>
+  <g stroke="#16a34a" stroke-width="2.5">
+    <line x1="74" y1="34" x2="62" y2="64"/><line x1="98" y1="34" x2="86" y2="64"/><line x1="122" y1="34" x2="110" y2="64"/>
+    <line x1="218" y1="34" x2="206" y2="64"/><line x1="242" y1="34" x2="230" y2="64"/><line x1="266" y1="34" x2="254" y2="64"/>
+  </g>
+  <g>
+    <rect x="52" y="64" width="20" height="16" rx="4" fill="#16a34a"/><rect x="76" y="64" width="20" height="16" rx="4" fill="#16a34a"/><rect x="100" y="64" width="20" height="16" rx="4" fill="#16a34a"/><rect x="124" y="64" width="20" height="16" rx="4" fill="#dc2626"/><rect x="148" y="64" width="20" height="16" rx="4" fill="#dc2626"/><rect x="172" y="64" width="20" height="16" rx="4" fill="#dc2626"/><rect x="196" y="64" width="20" height="16" rx="4" fill="#16a34a"/><rect x="220" y="64" width="20" height="16" rx="4" fill="#16a34a"/><rect x="244" y="64" width="20" height="16" rx="4" fill="#16a34a"/>
+  </g>
+  <text x="162" y="124" text-anchor="middle" font-size="15" font-weight="600" letter-spacing="4" fill="#111827">VERBATIMETER</text>
 </svg>
