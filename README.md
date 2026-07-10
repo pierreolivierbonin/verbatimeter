@@ -1,8 +1,6 @@
 <p align="center">
-  <img src="docs/assets/logo.svg" alt="verbatimeter — the name above a source line aligned to its matched (green) and differing (red) runs" width="360">
+  <img src="docs/assets/logo.svg" alt="verbatimeter — source word boxes linked to a generation's word boxes: matched pairs connected in green, one differing box in red" width="360">
 </p>
-
-# verbatimeter
 
 LLMs fabricate, and they fabricate fluently — an answer that claims to be
 grounded in a source cannot be taken on trust. verbatimeter verifies the
