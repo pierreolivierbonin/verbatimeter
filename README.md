@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="docs/assets/logo.svg" alt="verbatimeter — source word boxes aligned to a generation's word boxes, matched pairs linked in green with a red differing run, above the name in letterspaced capitals" width="320">
+  <img src="https://raw.githubusercontent.com/pierreolivierbonin/verbatimeter/main/docs/assets/logo.svg" alt="verbatimeter — source word boxes aligned to a generation's word boxes, matched pairs linked in green with a red differing run, above the name in letterspaced capitals" width="320">
 </p>
 
 <p align="center">
@@ -16,7 +16,7 @@
   <a href="https://github.com/pierreolivierbonin/verbatimeter/actions/workflows/ci.yml"><img src="https://github.com/pierreolivierbonin/verbatimeter/actions/workflows/ci.yml/badge.svg?branch=main" alt="CI"></a>
   <a href="https://pypi.org/project/verbatimeter/"><img src="https://img.shields.io/pypi/v/verbatimeter" alt="PyPI version"></a>
   <a href="https://pypi.org/project/verbatimeter/"><img src="https://img.shields.io/pypi/pyversions/verbatimeter" alt="Supported Python versions"></a>
-  <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-2ea043" alt="License: MIT"></a>
+  <a href="https://github.com/pierreolivierbonin/verbatimeter/blob/main/LICENSE"><img src="https://img.shields.io/badge/license-MIT-2ea043" alt="License: MIT"></a>
 </p>
 
 LLMs fabricate, and they fabricate fluently — an answer that claims to be
@@ -38,10 +38,10 @@ def generate(question, context): ...
 The same check is available as library functions and as a CLI: the numbers in
 an evaluation script, a CI pipeline, and a terminal are identical.
 
-<p align="center"><img src="docs/assets/streaming-demo.svg" alt="verbatimeter verifying a streamed GPT-4o-mini answer word by word: source-verbatim words in green, the model's own words in red" width="720"></p>
+<p align="center"><img src="https://raw.githubusercontent.com/pierreolivierbonin/verbatimeter/main/docs/assets/streaming-demo.svg" alt="verbatimeter verifying a streamed GPT-4o-mini answer word by word: source-verbatim words in green, the model's own words in red" width="720"></p>
 
 The animation above replays a real captured run. A minimal RAG agent
-([`examples/openai_rag_streaming_example.py`](examples/openai_rag_streaming_example.py))
+([`examples/openai_rag_streaming_example.py`](https://github.com/pierreolivierbonin/verbatimeter/blob/main/examples/openai_rag_streaming_example.py))
 retrieved four passages from the *Attention Is All You Need* abstract, asked
 `gpt-4o-mini` *"What architecture does the paper propose, and why is it faster
 to train?"*, and instructed it to reuse the context's exact wording. The
@@ -118,7 +118,7 @@ same quoting.)
 
 To try the quotation check instead, add `--quotes` and put a
 `"…"` span in the answer. Runnable samples live in
-[`examples/basics/`](examples/basics/).
+[`examples/basics/`](https://github.com/pierreolivierbonin/verbatimeter/tree/main/examples/basics).
 
 ## Usage
 
@@ -207,16 +207,16 @@ iterator of text chunks (`yield delta` from your provider's stream), the
 chunks pass through unchanged for your own UI while each word is printed in
 its final color as it arrives — green verbatim, red not — with the full
 `CheckResult` attached as `.result` once the stream completes. See
-[`examples/openai_rag_streaming_example.py`](examples/openai_rag_streaming_example.py).
+[`examples/openai_rag_streaming_example.py`](https://github.com/pierreolivierbonin/verbatimeter/blob/main/examples/openai_rag_streaming_example.py).
 
 Integrating with a retrieval-augmented-generation agent? See
-[docs/rag-agent-integration.md](docs/rag-agent-integration.md).
+[docs/rag-agent-integration.md](https://github.com/pierreolivierbonin/verbatimeter/blob/main/docs/rag-agent-integration.md).
 
 ### Tokenizer
 
 The differing-token count uses `tiktoken` (encoding `cl100k_base`) by default.
 The vocabulary is bundled with the package (see
-[THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md)), so token counting works fully
+[THIRD_PARTY_NOTICES.md](https://github.com/pierreolivierbonin/verbatimeter/blob/main/THIRD_PARTY_NOTICES.md)), so token counting works fully
 offline — the package never touches the network. To count with a different
 tokenizer — or avoid `tiktoken` entirely — pass a `count_tokens` callable
 (`str -> int`) to `check`, `check_answer`, or `verify`:
@@ -295,7 +295,7 @@ End-to-end time is **O(S · C)**, dominated by the alignment. Contiguous keeps o
 the current and previous DP rows (`O(C)` memory) and runs a few times faster than
 subsequence, which materializes the whole `S × C` table.
 
-Measured with [`profiling/benchmark.py`](profiling/benchmark.py) (random text,
+Measured with [`profiling/benchmark.py`](https://github.com/pierreolivierbonin/verbatimeter/blob/main/profiling/benchmark.py) (random text,
 best of 5; absolute times are hardware-dependent):
 
 ```
@@ -314,12 +314,12 @@ in practice. For typical inputs (a few-thousand-word context, a few-hundred-word
 answer) that is single-digit to tens of milliseconds. Very large sources grow
 quadratically; contiguous n-gram matching could be reduced to O(S + C) with
 rolling hashes or a suffix automaton (noted as a future option in
-[ADR-0010](docs/0010-verbatim-overlap-whole-text-default.md)).
+[ADR-0010](https://github.com/pierreolivierbonin/verbatimeter/blob/main/docs/0010-verbatim-overlap-whole-text-default.md)).
 
 ## Design
 
-Architecture decisions are recorded as ADRs under [`docs/`](docs/), alongside the
-[RAG integration guide](docs/rag-agent-integration.md). The core alignment is a
+Architecture decisions are recorded as ADRs under [`docs/`](https://github.com/pierreolivierbonin/verbatimeter/tree/main/docs), alongside the
+[RAG integration guide](https://github.com/pierreolivierbonin/verbatimeter/blob/main/docs/rag-agent-integration.md). The core alignment is a
 longest-common-subsequence (LCS) algorithm ported from the
 [Canada-Labour-Research-Assistant](https://github.com/pierreolivierbonin/Canada-Labour-Research-Assistant)
 project.
@@ -335,9 +335,9 @@ verbatim from:
 
 Bug reports with runnable reproductions and bug-fix PRs are encouraged; the
 scope is deliberately narrow and defended. See
-[CONTRIBUTING.md](CONTRIBUTING.md) before proposing features.
+[CONTRIBUTING.md](https://github.com/pierreolivierbonin/verbatimeter/blob/main/CONTRIBUTING.md) before proposing features.
 
 ## License
 
-[MIT](LICENSE). Bundled third-party material is credited in
-[THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md).
+[MIT](https://github.com/pierreolivierbonin/verbatimeter/blob/main/LICENSE). Bundled third-party material is credited in
+[THIRD_PARTY_NOTICES.md](https://github.com/pierreolivierbonin/verbatimeter/blob/main/THIRD_PARTY_NOTICES.md).
