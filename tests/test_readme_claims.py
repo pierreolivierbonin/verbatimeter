@@ -1,6 +1,7 @@
 import io
 import json
 from dataclasses import asdict
+from pathlib import Path
 
 import verbatimeter
 from verbatimeter import check, check_answer, render_result
@@ -37,6 +38,11 @@ QUICKSTART_ANSWER = (
     "We propose a new simple network architecture, the Transformer, based solely on attention "
     "mechanisms, dispensing with recurrence and convolutions entirely"
 )
+
+
+def test_pypi_badge_matches_the_package_version():
+    badge = Path(__file__).parent.parent / "docs" / "assets" / "pypi-version-badge.svg"
+    assert f"v{verbatimeter.__version__}" in badge.read_text(encoding="utf-8")
 
 
 def test_same_inputs_produce_the_same_numbers_every_time():
