@@ -30,7 +30,7 @@ For your RAG agents, just plug it in with a decorator as follows:
 def generate(question, context): ...
 ```
 
-... or use it through the CLI.
+... or use it as a CLI.
 
 <p align="center"><img src="https://raw.githubusercontent.com/pierreolivierbonin/verbatimeter/main/docs/assets/streaming-demo.svg" alt="verbatimeter verifying a streamed GPT-4o-mini answer word by word: source-verbatim words in green, the model's own words in red" width="720"></p>
 
