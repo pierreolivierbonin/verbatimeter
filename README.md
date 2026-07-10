@@ -4,38 +4,34 @@
 
 # verbatimeter
 
-Deterministically measure how much of a text **reuses** a source. Two readings
-of one word-level alignment:
+Deterministically measure how much of a text **reuses** a source. Give it a
+generated answer and the text it should be grounded in: every reused word is
+highlighted, every differing token is counted. No judge model, no embeddings,
+no sampling — run it twice, get the same numbers.
+
+One word-level alignment, two readings:
 
 - **Verbatim reuse** (default) — word-for-word copying, in contiguous runs.
-  Copied words are highlighted in one color, the rest in another, and the tokens
-  that differ are counted.
-- **Verbatim paraphrasing** (`--subsequence`) — the source's own words reused in
-  order but not contiguously: split up, rearranged around, interleaved with new
-  words. Paraphrase that stays verbatim at the word level.
+- **Verbatim paraphrasing** (`--subsequence`) — the source's own words reused
+  in order but not contiguously: split up, rearranged, interleaved with new
+  words.
 
-No judge model, no embeddings, no sampling: run it twice, get the same numbers.
+What it's built for:
 
-- **Source-use evaluation** — how much of a summary, answer, or document is
-  taken directly from a reference, and how much verbatim-paraphrases it.
-- **Hallucination gating (`--quotes`)** — instruct an LLM to support its answer
-  with verbatim quotations, then verify them. A quotation whose words aren't in
-  the source is a caught fabrication — a deterministic *lower bound* on grounding
-  failures — and the exit code gates your pipeline.
-- **Multilingual** — any language that separates words with spaces:
-  Unicode-normalized (NFC), case-folded matching, and quotation extraction
-  across straight `"…"`, curly `“…”`, guillemet `« … »`, and low-9 `„…“`
-  conventions. Validated by test suites in English, French, Spanish,
-  Portuguese, German, Russian, Hindi, Bengali, Indonesian, Urdu, and Arabic
-  (unvocalized). Unsegmented scripts (Chinese, Japanese, Thai) are not yet
-  supported.
+- **Source-use evaluation** — how much of a summary, answer, or document comes
+  directly from a reference, and how much is verbatim-paraphrased from it.
+- **Hallucination gating** (`--quotes`) — instruct an LLM to support its answer
+  with verbatim quotations, verify each one, and fail the pipeline on
+  fabrications. A deterministic *lower bound* on grounding failures.
+- **Multilingual** — any language that separates words with spaces, with
+  Unicode-normalized, case-folded matching. Validated on eleven languages,
+  from English and French to Hindi, Urdu, and Arabic; quotation extraction
+  understands `"…"`, `“…”`, `« … »`, and `„…“`. Unsegmented scripts (Chinese,
+  Japanese, Thai) are not yet supported.
 - **Lightweight and offline** — one runtime dependency (`tiktoken`), with the
   vocabulary bundled: no network access, ever.
-- **Portable** — three surfaces for the same check: the `@verify` decorator over
-  your LLM's `generate()` function, importable library functions, or a CLI.
-
-It is built on a longest-common-subsequence (LCS) alignment ported from the
-[Canada-Labour-Research-Assistant](https://github.com/pierreolivierbonin/Canada-Labour-Research-Assistant) project.
+- **Portable** — the same check as a `@verify` decorator over your `generate()`
+  function, as importable library functions, or as a CLI.
 
 Scope is deliberately narrow: it verifies, highlights, and collects statistics on
 text you provide. Extracting text from PDFs, Word documents, HTML, and other
@@ -114,16 +110,14 @@ verbatimeter --source source.txt --source-file --answer answer.txt --answer-file
   `--quotes` restricts the check to quoted spans (the hallucination-check use) —
   straight `"…"`, curly `“…”`, French guillemets `« … »` (inner padding spaces
   stripped), and low-9 `„…“`.
-- Matching is **contiguous** by default: a word counts as verbatim only inside a
-  run of `--ngram` (default 3, minimum 3 — shorter runs are coincidence-prone,
-  especially with French and English function-word pairs) consecutive words copied
-  verbatim from the source. A quotation shorter than `--ngram` words cannot contain
-  such a run and therefore **fails the gate** — instruct your model to quote at
-  least three consecutive words. `--subsequence` switches to order-only (LCS)
-  matching, which measures **verbatim paraphrasing** — the source's words reused
-  in order, not necessarily contiguously — and deliberately has no run floor
-  (`--ngram` is ignored in this mode): single shared words in order are the
-  signal.
+- Matching is **contiguous** by default: a word counts as verbatim only inside
+  a run of at least `--ngram` consecutive words copied from the source. The
+  default and minimum are 3 — shorter runs are coincidence-prone. A quotation
+  shorter than `--ngram` words cannot contain such a run and therefore **fails
+  the gate**; instruct your model to quote at least three consecutive words.
+- `--subsequence` switches to order-only (LCS) matching, which measures
+  **verbatim paraphrasing**. It deliberately has no run floor — single shared
+  words in order are the signal — so `--ngram` is ignored in this mode.
 - With `--quotes`, the exit code is non-zero when any quotation contains differing
   tokens — or when **no quotations are found at all** (an answer that stops quoting
   must not pass the gate silently). Disable with `--no-fail`. Whole-text scope is a
@@ -148,12 +142,16 @@ print(render_result(result))
 print(result.total_differing_tokens)
 ```
 
-`check(...)` returns a `Result` with `words` (per-word verbatim flags for
-highlighting), `fragments` (the verbatim runs), `longest_fragment`,
-`matched_ratio` (fraction of the text's words matched in the source),
-`differing_tokens` / `total_tokens`, and `rouge_l` (ROUGE-L F1 between the text
-and the smallest source window containing every matched word — how faithful the
-text is to the region it drew from; `source_segment` is that window).
+`check(...)` returns a `Result`:
+
+| Field | Meaning |
+| --- | --- |
+| `words` | per-word verbatim flags — drives the highlighting |
+| `fragments` / `longest_fragment` | the verbatim runs, and the longest run's word count |
+| `matched_ratio` | fraction of the text's words matched in the source |
+| `differing_tokens` / `total_tokens` | tokens that differ, against the text's size |
+| `source_segment` | the smallest source window containing every matched word |
+| `rouge_l` | ROUGE-L F1 between the text and `source_segment` — fidelity to the region it drew from |
 
 ## Decorator
 
@@ -167,12 +165,12 @@ def generate(prompt, context=None):
 generate("...", context=retrieved_passages)
 ```
 
-The wrapped function's return value is the answer; the source is resolved from a
-static `source=` and/or a runtime argument (runtime wins). Highlighting and stats
-print as a side effect — pass `print_stats=False` for a quiet mode — and the
-answer comes back as a `str` subclass carrying the full measurement on
-`.result` (a `CheckResult`), so existing string-handling code is unaffected and
-the numbers are always one attribute away. Omit `scope="quotes"` to check the
+The wrapped function's return value is the answer. The source is resolved from
+a static `source=` and/or a runtime argument — the runtime value wins.
+Highlighting and stats print as a side effect (pass `print_stats=False` for a
+quiet mode), and the answer comes back as a `str` subclass with the full
+measurement attached as `.result`: existing string-handling code is unaffected,
+and the numbers are one attribute away. Omit `scope="quotes"` to check the
 whole answer.
 
 **Streaming works automatically**: if the decorated function returns an
@@ -252,4 +250,7 @@ verbatim from:
 ## Design
 
 Architecture decisions are recorded as ADRs under [`docs/`](docs/), alongside the
-[RAG integration guide](docs/rag-agent-integration.md).
+[RAG integration guide](docs/rag-agent-integration.md). The core alignment is a
+longest-common-subsequence (LCS) algorithm ported from the
+[Canada-Labour-Research-Assistant](https://github.com/pierreolivierbonin/Canada-Labour-Research-Assistant)
+project.
