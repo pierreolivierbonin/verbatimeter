@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="docs/assets/logo.svg" alt="verbatimeter — a pixel-art V in green blocks with one red glitch block, above the name in letterspaced capitals" width="240">
+  <img src="docs/assets/logo.svg" alt="verbatimeter — source word boxes aligned to a generation's word boxes, matched pairs linked in green with a red differing run, above the name in letterspaced capitals" width="320">
 </p>
 
 <p align="center">
