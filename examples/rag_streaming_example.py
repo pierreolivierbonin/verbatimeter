@@ -68,9 +68,9 @@ def generate(question, source):
 
 if __name__ == "__main__":
     question = "What architecture does the paper propose, and why is it faster to train?"
-    chunks = retrieve(question)
-    print(f"query      : {question}")
-    print(f"retrieved  : {', '.join(title for title, _ in chunks)}")
+    chunks = retrieve(question, k=4)
+    print(f"\nquery: {question}")
+    print(f"\nretrieved: {', '.join(title for title, _ in chunks)}")
     print()
     print("streaming answer (green = verbatim from retrieved context, red = model's own words):")
     print()
