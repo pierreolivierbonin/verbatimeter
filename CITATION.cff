@@ -1,0 +1,23 @@
+cff-version: 1.2.0
+message: If you use verbatimeter in your research, please cite it as below.
+type: software
+title: verbatimeter
+abstract: >-
+  Deterministic verification of how grounded an AI-generated text is in its
+  source, measured as verbatim reuse (contiguous matching) or verbatim
+  paraphrasing (LCS), with word-level highlighting, token counts, and an
+  optional pipeline gate for fabricated quotations.
+authors:
+  - family-names: Bonin
+    given-names: Pierre-Olivier
+license: MIT
+version: 0.1.0
+repository-code: https://github.com/pierreolivierbonin/verbatimeter
+keywords:
+  - verbatim
+  - groundedness
+  - verification
+  - text-reuse
+  - hallucination
+  - large language models
+  - retrieval-augmented generation
