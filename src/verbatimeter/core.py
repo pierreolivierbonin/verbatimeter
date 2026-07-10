@@ -4,9 +4,10 @@ import json
 import os
 import re
 import sys
-from collections.abc import Iterator
+from collections.abc import Callable, Iterator
 from dataclasses import asdict, dataclass, field
 from functools import cache, wraps
+from typing import Literal, TextIO
 
 from .align import (
     calculate_LCS_and_rouge_L_score,
@@ -15,6 +16,10 @@ from .align import (
     lcs_alignment,
     segment_span,
 )
+
+Mode = Literal["contiguous", "subsequence"]
+Scope = Literal["all", "quotes"]
+TokenCounter = Callable[[str], int] | None
 
 
 @cache
@@ -109,7 +114,7 @@ class CheckResult:
 
 
 def _align(
-    source_words: list[str], candidate_words: list[str], mode: str, ngram: int
+    source_words: list[str], candidate_words: list[str], mode: Mode, ngram: int
 ) -> tuple[list[int], list[int]]:
     if mode == "contiguous":
         return contiguous_alignment(source_words, candidate_words, ngram)
@@ -152,7 +157,12 @@ def _fragments(words: list[WordSpan]) -> list[str]:
 
 
 def check(
-    text: str, source: str, *, ngram: int = 3, mode: str = "contiguous", count_tokens=None
+    text: str,
+    source: str,
+    *,
+    ngram: int = 3,
+    mode: Mode = "contiguous",
+    count_tokens: TokenCounter = None,
 ) -> Result:
     if ngram < 3:
         raise ValueError(f"ngram must be >= 3, got {ngram}")
@@ -181,10 +191,10 @@ def check_answer(
     answer: str,
     source: str,
     *,
-    scope: str = "all",
+    scope: Scope = "all",
     ngram: int = 3,
-    mode: str = "contiguous",
-    count_tokens=None,
+    mode: Mode = "contiguous",
+    count_tokens: TokenCounter = None,
 ) -> CheckResult:
     if scope == "all":
         candidates = [answer.strip()] if answer.strip() else []
@@ -209,7 +219,7 @@ _PALETTES = {
 }
 
 
-def _resolve_color(use_color: bool | None, stream=None) -> bool:
+def _resolve_color(use_color: bool | None, stream: TextIO | None = None) -> bool:
     if use_color is not None:
         return use_color
     stream = stream or sys.stdout
@@ -273,13 +283,13 @@ class AnnotatedAnswer(str):
 class AnnotatedStream:
     result: CheckResult | None
 
-    def __init__(self, chunks, source, **config):
+    def __init__(self, chunks: Iterator[str], source: str, **config):
         self._chunks = chunks
         self._source = source
         self._config = config
         self.result = None
 
-    def __iter__(self):
+    def __iter__(self) -> Iterator[str]:
         cfg = self._config
         live = cfg["print_stats"] and cfg["scope"] == "all" and cfg["mode"] == "contiguous"
         out = cfg["file"] or sys.stdout
@@ -338,14 +348,14 @@ def verify(
     source: str | None = None,
     *,
     source_arg: str = "source",
-    scope: str = "all",
+    scope: Scope = "all",
     ngram: int = 3,
-    mode: str = "contiguous",
-    count_tokens=None,
+    mode: Mode = "contiguous",
+    count_tokens: TokenCounter = None,
     use_color: bool | None = None,
     palette: str = "classic",
     print_stats: bool = True,
-    file=None,
+    file: TextIO | None = None,
 ):
     def decorator(fn):
         sig = inspect.signature(fn)
