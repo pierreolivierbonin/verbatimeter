@@ -69,6 +69,19 @@ def test_short_quote_fails_closed():
     assert verbatimeter.main(args) == 1
 
 
+def test_inch_marks_are_not_quote_openers():
+    assert extract_quotes("She is 5'4\" tall") == []
+    assert extract_quotes('planks between 4" and 6" wide') == []
+    assert extract_quotes('She is 5\'4" tall and said "alpha beta gamma" ok') == [
+        "alpha beta gamma"
+    ]
+    assert extract_quotes('He said "alpha beta gamma" and is 5\'4" tall') == ["alpha beta gamma"]
+
+
+def test_quote_ending_in_a_digit_still_extracts():
+    assert extract_quotes('The abstract reports "achieves 28.4" exactly') == ["achieves 28.4"]
+
+
 def test_mixed_good_and_bad_quotes_gate_on_any_failure():
     answer = '"alpha beta gamma" but also "omega psi chi"'
     result = check_answer(answer, SOURCE, scope="quotes")

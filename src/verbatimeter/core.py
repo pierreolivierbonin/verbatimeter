@@ -51,7 +51,7 @@ def _tiktoken_count(text: str) -> int:
 
 
 _QUOTE_RE = re.compile(
-    r'"([^"]*)"'
+    r'(?<!\d)"([^"]*)"'
     r"|“([^”]*)”"
     r"|«\s*([^»]*?)\s*»"
     r"|„([^“”]*)[“”]"
