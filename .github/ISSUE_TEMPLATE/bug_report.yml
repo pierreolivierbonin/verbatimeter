@@ -1,0 +1,45 @@
+name: Bug report
+description: Something misbehaves — include a runnable reproduction.
+labels: ["bug"]
+body:
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Reproducible example
+      description: >
+        A snippet or CLI command that reproduces the problem out of the box —
+        exact inputs inline, no local files, runnable as pasted.
+      placeholder: |
+        from verbatimeter import check
+
+        r = check("the answer text", "the source text")
+        print(r.matched_ratio, r.fragments)
+      render: python
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected result
+    validations:
+      required: true
+  - type: textarea
+    id: actual
+    attributes:
+      label: Actual result
+    validations:
+      required: true
+  - type: input
+    id: version
+    attributes:
+      label: verbatimeter version
+      description: Output of `verbatimeter --version`.
+    validations:
+      required: true
+  - type: input
+    id: environment
+    attributes:
+      label: Python version and OS
+      placeholder: Python 3.12, Windows 11
+    validations:
+      required: true

@@ -1,0 +1,27 @@
+name: Feature request
+description: Read the scope policy first — requests that expand the scope will usually be declined.
+labels: ["enhancement"]
+body:
+  - type: markdown
+    attributes:
+      value: >
+        verbatimeter deliberately does one job (see
+        [ADR-0011](https://github.com/pierreolivierbonin/verbatimeter/blob/main/docs/0011-scope-verbatim-and-paraphrase.md)
+        and [CONTRIBUTING.md](https://github.com/pierreolivierbonin/verbatimeter/blob/main/CONTRIBUTING.md)).
+        Requests that expand that scope will usually be declined.
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposal
+    validations:
+      required: true
+  - type: textarea
+    id: scope-fit
+    attributes:
+      label: Why this fits the existing scope
+      description: >
+        Explain how the proposal serves the stated goals — verbatim reuse,
+        verbatim paraphrasing, quotation verification, spaced-script
+        multilingual support — without broadening them.
+    validations:
+      required: true
