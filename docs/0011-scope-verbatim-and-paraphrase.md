@@ -33,6 +33,10 @@ concepts where the algorithm has only one.
 
 1. **`min_words` is removed** from `extract_quotes`, `check_answer`, `verify`,
    and the CLI. Whitespace-only quotes are still dropped during extraction.
+   *Amended 2026-07-09:* extraction now also strips surrounding whitespace
+   uniformly across conventions and drops quotes containing no clean word
+   (punctuation-only spans), which previously slipped through the gate with
+   zero countable tokens.
 2. **`ngram` is the single strictness knob**, with an enforced minimum of 3
    (`check` raises `ValueError` below it). Shorter runs are coincidence-prone,
    especially with English and French function-word pairs (*of the*, *in a*,

@@ -62,8 +62,8 @@ def extract_quotes(answer: str) -> list[str]:
     seen = set()
     quotes = []
     for groups in _QUOTE_RE.findall(answer):
-        quote = next((g for g in groups if g), "")
-        if not quote.split() or quote in seen:
+        quote = next((g for g in groups if g), "").strip()
+        if not clean_text(quote) or quote in seen:
             continue
         seen.add(quote)
         quotes.append(quote)
