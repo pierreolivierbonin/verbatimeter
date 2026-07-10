@@ -21,24 +21,18 @@
   <a href="https://github.com/pierreolivierbonin/verbatimeter/blob/main/LICENSE"><img src="https://img.shields.io/badge/license-MIT-2ea043" alt="License: MIT"></a>
 </p>
 
-`verbatimeter` delivers deterministic verification of groundedness: LLMs
-fabricate — fluently — so an answer that claims to be grounded in a source
-cannot be taken on trust. It measures how grounded a text is in its source as
-verbatim reuse (contiguous matching) or verbatim paraphrasing (LCS), showing
-word for word what came from the source and what the model introduced. No
-judge model, no embeddings, no sampling — the same inputs produce the same
-numbers every time, in research or in production.
+`verbatimeter` delivers deterministic verification of groundedness by
+measuring verbatim reuse (contiguous matching) and verbatim paraphrasing
+(longest common subsequence).
 
-For RAG agents, verification is one decorator line. Every answer — streamed
-or not — comes back highlighted and measured:
+For your RAG agents, just plug it in with a decorator as follows:
 
 ```python
 @verify(source_arg="context", scope="quotes")
 def generate(question, context): ...
 ```
 
-The same check is available as library functions and as a CLI: the numbers in
-an evaluation script, a CI pipeline, and a terminal are identical.
+... or use it through the CLI.
 
 <p align="center"><img src="https://raw.githubusercontent.com/pierreolivierbonin/verbatimeter/main/docs/assets/streaming-demo.svg" alt="verbatimeter verifying a streamed GPT-4o-mini answer word by word: source-verbatim words in green, the model's own words in red" width="720"></p>
 
