@@ -2,6 +2,8 @@
   <img src="https://raw.githubusercontent.com/pierreolivierbonin/verbatimeter/main/docs/assets/logo.svg" alt="verbatimeter — source word boxes aligned to a generation's word boxes, matched pairs linked in green with a red differing run, above the name in letterspaced capitals" width="320">
 </p>
 
+<p align="center"><em>Deterministic verification of groundedness for AI-generated text</em></p>
+
 <p align="center">
   <a href="#getting-started">Getting started</a> ·
   <a href="#usage">Usage</a> ·
@@ -19,13 +21,13 @@
   <a href="https://github.com/pierreolivierbonin/verbatimeter/blob/main/LICENSE"><img src="https://img.shields.io/badge/license-MIT-2ea043" alt="License: MIT"></a>
 </p>
 
-LLMs fabricate, and they fabricate fluently — an answer that claims to be
-grounded in a source cannot be taken on trust. `verbatimeter` is a minimalist,
-deterministic verifier for AI-generated text: it measures how grounded a text
-is in its source as verbatim reuse (contiguous matching) or verbatim
-paraphrasing (LCS), showing word for word what came from the source and what
-the model introduced. No judge model, no embeddings, no sampling — the same
-inputs produce the same numbers every time, in research or in production.
+`verbatimeter` delivers deterministic verification of groundedness: LLMs
+fabricate — fluently — so an answer that claims to be grounded in a source
+cannot be taken on trust. It measures how grounded a text is in its source as
+verbatim reuse (contiguous matching) or verbatim paraphrasing (LCS), showing
+word for word what came from the source and what the model introduced. No
+judge model, no embeddings, no sampling — the same inputs produce the same
+numbers every time, in research or in production.
 
 For RAG agents, verification is one decorator line. Every answer — streamed
 or not — comes back highlighted and measured:
