@@ -12,6 +12,10 @@
   <a href="#license">License</a>
 </p>
 
+<p align="center">
+  <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-2ea043" alt="License: MIT"></a>
+</p>
+
 LLMs fabricate, and they fabricate fluently — an answer that claims to be
 grounded in a source cannot be taken on trust. `verbatimeter` is a minimalist,
 deterministic verifier for AI-generated text: it measures how grounded a text
