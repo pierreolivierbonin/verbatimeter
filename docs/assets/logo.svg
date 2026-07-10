@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 380 120" font-family="system-ui,-apple-system,'Segoe UI',sans-serif">
+  <rect x="1" y="1" width="378" height="118" rx="16" fill="#0d1117" stroke="#30363d" stroke-width="2"/>
+  <text x="190" y="52" text-anchor="middle" font-size="40" font-weight="750" letter-spacing="-1.5" fill="#f1f5f9">verbatimeter</text>
+  <rect x="70" y="66" width="240" height="7" rx="3.5" fill="#475569"/>
+  <rect x="80" y="82" width="92" height="7" rx="3.5" fill="#22c55e"/>
+  <rect x="182" y="82" width="30" height="7" rx="3.5" fill="#ef4444"/>
+  <rect x="222" y="82" width="78" height="7" rx="3.5" fill="#22c55e"/>
+  <line x1="88" y1="73" x2="84" y2="82" stroke="#22c55e" stroke-width="2"/>
+  <line x1="164" y1="73" x2="160" y2="82" stroke="#22c55e" stroke-width="2"/>
+  <line x1="230" y1="73" x2="226" y2="82" stroke="#22c55e" stroke-width="2"/>
+  <line x1="300" y1="73" x2="296" y2="82" stroke="#22c55e" stroke-width="2"/>
+</svg>

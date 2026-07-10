@@ -1,8 +1,5 @@
 <p align="center">
-  <picture>
-    <source media="(prefers-color-scheme: dark)" srcset="docs/assets/logo-dark.svg">
-    <img src="docs/assets/logo-light.svg" alt="verbatimeter — the name above a source line aligned to its matched (green) and differing (red) runs" width="340">
-  </picture>
+  <img src="docs/assets/logo.svg" alt="verbatimeter — the name above a source line aligned to its matched (green) and differing (red) runs" width="360">
 </p>
 
 # verbatimeter
