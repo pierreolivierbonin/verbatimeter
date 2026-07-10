@@ -36,7 +36,7 @@ def generate(question, context): ...
 ```
 
 The same check is available as library functions and as a CLI: the numbers in
-a notebook, a CI gate, and a terminal are identical.
+an evaluation script, a CI pipeline, and a terminal are identical.
 
 <p align="center"><img src="docs/assets/streaming-demo.svg" alt="verbatimeter verifying a streamed GPT-4o-mini answer word by word: source-verbatim words in green, the model's own words in red" width="720"></p>
 
