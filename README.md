@@ -51,7 +51,7 @@ choice, then pass the resulting text in.
 
 <p align="center"><img src="docs/assets/streaming-demo.svg" alt="verbatimeter verifying a streamed GPT-4o-mini answer word by word: source-verbatim words in green, the model's own words in red" width="720"></p>
 
-What you're watching — a replay of a real captured run. A
+The animation above replays a real captured run. A
 minimal RAG agent
 ([`examples/rag_streaming_example.py`](examples/rag_streaming_example.py))
 retrieved two passages from the *Attention Is All You Need* abstract, asked
