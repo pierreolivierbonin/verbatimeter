@@ -135,10 +135,8 @@ verbatimeter --source-file source.txt --answer-file answer.txt --ngram 5
   to use it as a pipeline gate: the exit code becomes non-zero when any
   quotation contains differing tokens — or when **no quotations are found at
   all** (an answer that stops quoting must not pass a gate silently).
-- `--no-color` for plain output (auto-disables on non-TTY / when `NO_COLOR` is
-  set); `--palette classic|colorblind|neon|mono` picks the highlight colors
-  (also a `palette=` keyword on `render_words`, `render_result`, and `verify`);
-  `--json` emits machine-readable results.
+- `--no-color` for plain output; `--palette` picks the highlight colors (see
+  [Accessibility](#accessibility)); `--json` emits machine-readable results.
 
 ## Enforcement
 
@@ -170,6 +168,24 @@ if answer.result.total_differing_tokens > 0:
 Because the check is deterministic, the gate never flakes: the same answer
 produces the same verdict every time, and when it fails, the highlighted words
 identify exactly which quotation broke and which words were fabricated.
+
+## Accessibility
+
+The highlight colors are configurable on every surface — `--palette` on the
+CLI, and a `palette=` keyword on `render_words`, `render_result`, and
+`verify` (including streamed output):
+
+| Preset | Matched / differing | For |
+| --- | --- | --- |
+| `classic` | green / red | the default |
+| `colorblind` | blue / orange | red–green color-vision deficiency |
+| `neon` | bright green / magenta | dark terminals and screen recordings |
+| `mono` | bold / inverse video | no color reliance at all |
+
+Color is never load-bearing: the stats lines carry every number as plain text,
+and `--json` exposes the full result for machine consumption. Rendering honors
+the [`NO_COLOR`](https://no-color.org/) convention, auto-disables color when
+output is not a terminal, and `--no-color` forces plain text.
 
 ## Library
 
