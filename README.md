@@ -3,7 +3,6 @@
 </p>
 
 <p align="center">
-  <a href="#demo">Demo</a> ·
   <a href="#getting-started">Getting started</a> ·
   <a href="#usage">Usage</a> ·
   <a href="#enforcement">Enforcement</a> ·
@@ -30,6 +29,31 @@ def generate(question, context): ...
 
 The same check is available as library functions and as a CLI: the numbers in
 a notebook, a CI gate, and a terminal are identical.
+
+<p align="center"><img src="docs/assets/streaming-demo.svg" alt="verbatimeter verifying a streamed GPT-4o-mini answer word by word: source-verbatim words in green, the model's own words in red" width="720"></p>
+
+The animation above replays a real captured run. A minimal RAG agent
+([`examples/openai_rag_streaming_example.py`](examples/openai_rag_streaming_example.py))
+retrieved four passages from the *Attention Is All You Need* abstract, asked
+`gpt-4o-mini` *"What architecture does the paper propose, and why is it faster
+to train?"*, and instructed it to reuse the context's exact wording. The
+`@verify` decorator checks the stream as it arrives and prints each word in
+its final color:
+
+- **green** — reproduced verbatim from the retrieved context, in contiguous
+  runs of ≥ 3 words: an 18-word lift opens the answer and a 19-word run
+  closes it;
+- **red** — the model's own wording. Note `experiments`: the word appears in
+  the source, but not inside any run of three consecutive shared words, so it
+  is not credited — matching is contiguous runs, not isolated words;
+- the stats line prints when the stream completes: 79% of the answer's words
+  are verbatim reuse, and 10 of its 55 tokens differ from the source.
+
+The model never sees verbatimeter — it just answers the question; every
+measurement is post-hoc, deterministic, and judge-free. Replay it yourself
+with `python examples/openai_rag_streaming_example.py` (needs
+`pip install openai python-dotenv` and `OPENAI_API_KEY` in the environment or
+a `.env` file).
 
 One word-level alignment, two readings:
 
@@ -60,33 +84,6 @@ Scope is deliberately narrow: it verifies, highlights, and collects statistics o
 text you provide. Extracting text from PDFs, Word documents, HTML, and other
 formats is out of scope — perform the extraction with the library of your
 choice, then pass the resulting text in.
-
-## Demo
-
-<p align="center"><img src="docs/assets/streaming-demo.svg" alt="verbatimeter verifying a streamed GPT-4o-mini answer word by word: source-verbatim words in green, the model's own words in red" width="720"></p>
-
-The animation above replays a real captured run. A minimal RAG agent
-([`examples/openai_rag_streaming_example.py`](examples/openai_rag_streaming_example.py))
-retrieved four passages from the *Attention Is All You Need* abstract, asked
-`gpt-4o-mini` *"What architecture does the paper propose, and why is it faster
-to train?"*, and instructed it to reuse the context's exact wording. The
-`@verify` decorator checks the stream as it arrives and prints each word in
-its final color:
-
-- **green** — reproduced verbatim from the retrieved context, in contiguous
-  runs of ≥ 3 words: an 18-word lift opens the answer and a 19-word run
-  closes it;
-- **red** — the model's own wording. Note `experiments`: the word appears in
-  the source, but not inside any run of three consecutive shared words, so it
-  is not credited — matching is contiguous runs, not isolated words;
-- the stats line prints when the stream completes: 79% of the answer's words
-  are verbatim reuse, and 10 of its 55 tokens differ from the source.
-
-The model never sees verbatimeter — it just answers the question; every
-measurement is post-hoc, deterministic, and judge-free. Replay it yourself
-with `python examples/openai_rag_streaming_example.py` (needs
-`pip install openai python-dotenv` and `OPENAI_API_KEY` in the environment or
-a `.env` file).
 
 ## Getting started
 
