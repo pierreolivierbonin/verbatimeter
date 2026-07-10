@@ -54,27 +54,28 @@ choice, then pass the resulting text in.
 
 <p align="center"><img src="docs/assets/streaming-demo.svg" alt="verbatimeter verifying a streamed GPT-4o-mini answer word by word: source-verbatim words in green, the model's own words in red" width="720"></p>
 
-The animation above replays a real captured run. A
-minimal RAG agent
-([`examples/rag_streaming_example.py`](examples/rag_streaming_example.py))
-retrieved two passages from the *Attention Is All You Need* abstract, asked
+The animation above replays a real captured run. A minimal RAG agent
+([`examples/openai_rag_streaming_example.py`](examples/openai_rag_streaming_example.py))
+retrieved four passages from the *Attention Is All You Need* abstract, asked
 `gpt-4o-mini` *"What architecture does the paper propose, and why is it faster
 to train?"*, and instructed it to reuse the context's exact wording. The
 `@verify` decorator checks the stream as it arrives and prints each word in
 its final color:
 
 - **green** — reproduced verbatim from the retrieved context, in contiguous
-  runs of ≥ 3 words (the opening lift runs 16 words unbroken);
-- **red** — the model's own wording: its connective phrases, and one giveaway
-  in the middle of a green run — `requires`, where the source says
-  *requiring*. A single conjugated word, caught live;
-- the stats line prints when the stream completes: 71% of the answer's words
-  are verbatim reuse, and 15 of its 59 tokens differ from the source.
+  runs of ≥ 3 words: an 18-word lift opens the answer and a 19-word run
+  closes it;
+- **red** — the model's own wording. Note `experiments`: the word appears in
+  the source, but not inside any run of three consecutive shared words, so it
+  is not credited — matching is contiguous runs, not isolated words;
+- the stats line prints when the stream completes: 79% of the answer's words
+  are verbatim reuse, and 10 of its 55 tokens differ from the source.
 
 The model never sees verbatimeter — it just answers the question; every
 measurement is post-hoc, deterministic, and judge-free. Replay it yourself
-with `python examples/rag_streaming_example.py` (needs `pip install openai`
-and `OPENAI_API_KEY`).
+with `python examples/openai_rag_streaming_example.py` (needs
+`pip install openai python-dotenv` and `OPENAI_API_KEY` in the environment or
+a `.env` file).
 
 ## Install
 
@@ -221,7 +222,7 @@ iterator of text chunks (`yield delta` from your provider's stream), the
 chunks pass through unchanged for your own UI while each word is printed in
 its final color as it arrives — green verbatim, red not — with the full
 `CheckResult` attached as `.result` once the stream completes. See
-[`examples/rag_streaming_example.py`](examples/rag_streaming_example.py).
+[`examples/openai_rag_streaming_example.py`](examples/openai_rag_streaming_example.py).
 
 Integrating with a retrieval-augmented-generation agent? See
 [docs/rag-agent-integration.md](docs/rag-agent-integration.md).

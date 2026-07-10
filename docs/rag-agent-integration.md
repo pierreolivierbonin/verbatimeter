@@ -63,8 +63,7 @@ def retrieve(query: str) -> str:
 ## Step 2 — Tell the model to quote verbatim
 
 The check only works on spans the model wraps in quotation marks, so instruct it
-to do exactly that (this is the same system prompt used in
-[`examples/openai_example.py`](../examples/openai_example.py)):
+to do exactly that, for example:
 
 ```python
 SYSTEM_PROMPT = (
@@ -223,7 +222,7 @@ flags exactly those — a fabricated quotation caught deterministically.
 
 ## See also
 
-- A runnable live-provider integration:
-  [`examples/openai_example.py`](../examples/openai_example.py).
+- A runnable live-provider integration with streaming:
+  [`examples/openai_rag_streaming_example.py`](../examples/openai_rag_streaming_example.py).
 - Zero-setup demos of the library, decorator, and CLI:
   [`examples/basics/`](../examples/basics/).
