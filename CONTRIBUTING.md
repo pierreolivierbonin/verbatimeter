@@ -42,6 +42,10 @@ ruff format, ty — and the full test suite. CI runs the suite on Python
 
 ## Conventions
 
+- **Commit messages follow [Conventional Commits](https://www.conventionalcommits.org/):**
+  `type: description` — e.g. `feat:`, `fix:`, `docs:`, `test:`, `build:`, `chore:`.
+  PR titles use the same format, since a squash merge takes the PR title
+  as the commit subject.
 - **No comments, no docstrings.** All prose lives in the README and the docs
   under [`docs/`](docs/). Explain a decision in its PR, not next to the code.
 - **The PR is the decision record** for behavioral and design changes: state
