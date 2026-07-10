@@ -57,6 +57,6 @@ def test_french_cli_quotes_gate(tmp_path):
         encoding="utf-8",
     )
     base = ["--source-file", str(src), "--quotes", "--no-color"]
-    assert verbatimeter.main([*base, "--answer-file", str(good)]) == 0
-    assert verbatimeter.main([*base, "--answer-file", str(bad)]) == 1
-    assert verbatimeter.main([*base, "--answer-file", str(bad), "--no-fail"]) == 0
+    assert verbatimeter.main([*base, "--answer-file", str(good), "--fail"]) == 0
+    assert verbatimeter.main([*base, "--answer-file", str(bad)]) == 0
+    assert verbatimeter.main([*base, "--answer-file", str(bad), "--fail"]) == 1

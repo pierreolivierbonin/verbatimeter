@@ -31,9 +31,10 @@ What it's built for:
 
 - **Grounding verification** — how much of an answer, summary, or report comes
   directly from its source, and how much is verbatim-paraphrased from it.
-- **Hallucination gating** (`--quotes`) — have the model support its answer
-  with verbatim quotations, verify each one, and fail the pipeline on
-  fabrications. A deterministic *lower bound* on grounding failures.
+- **Hallucination checking** (`--quotes`) — have the model support its answer
+  with verbatim quotations and verify each one; add `--fail` to gate a
+  pipeline on fabrications. A deterministic *lower bound* on grounding
+  failures.
 - **Multilingual** — any language that separates words with spaces, with
   Unicode-normalized, case-folded matching. Validated on eleven languages,
   from English and French to Hindi, Urdu, and Arabic; quotation extraction
@@ -127,10 +128,10 @@ verbatimeter --source-file source.txt --answer-file answer.txt --ngram 5
 - `--subsequence` switches to order-only (LCS) matching, which measures
   **verbatim paraphrasing**. It deliberately has no run floor — single shared
   words in order are the signal — so `--ngram` is ignored in this mode.
-- With `--quotes`, the exit code is non-zero when any quotation contains differing
-  tokens — or when **no quotations are found at all** (an answer that stops quoting
-  must not pass the gate silently). Disable with `--no-fail`. Whole-text scope is a
-  measurement and always exits 0.
+- `--quotes` is a measurement like every other scope and exits 0. Add `--fail`
+  to use it as a pipeline gate: the exit code becomes non-zero when any
+  quotation contains differing tokens — or when **no quotations are found at
+  all** (an answer that stops quoting must not pass a gate silently).
 - `--no-color` for plain output (auto-disables on non-TTY / when `NO_COLOR` is
   set); `--palette classic|colorblind|neon|mono` picks the highlight colors
   (also a `palette=` keyword on `render_words`, `render_result`, and `verify`);

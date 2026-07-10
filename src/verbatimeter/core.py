@@ -428,7 +428,11 @@ def _build_parser() -> argparse.ArgumentParser:
     p.add_argument("--palette", choices=sorted(_PALETTES), default="classic")
     p.add_argument("--no-color", action="store_true")
     p.add_argument("--json", action="store_true")
-    p.add_argument("--no-fail", action="store_true")
+    p.add_argument(
+        "--fail",
+        action="store_true",
+        help="with --quotes: exit non-zero when any quotation differs or none are found",
+    )
     return p
 
 
@@ -454,5 +458,5 @@ def main(argv: list[str] | None = None) -> int:
         )
 
     failed = not result.results or result.total_differing_tokens > 0
-    gate = scope == "quotes" and not args.no_fail and failed
+    gate = scope == "quotes" and args.fail and failed
     return 1 if gate else 0

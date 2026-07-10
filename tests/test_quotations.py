@@ -25,7 +25,8 @@ def test_punctuation_only_quotes_are_skipped():
 
 def test_punctuation_only_quotes_fail_the_gate():
     args = ["--source", SOURCE, "--answer", 'He said "…" here.', "--quotes", "--no-color"]
-    assert verbatimeter.main(args) == 1
+    assert verbatimeter.main(args) == 0
+    assert verbatimeter.main([*args, "--fail"]) == 1
 
 
 def test_duplicate_quotes_checked_once():
@@ -66,7 +67,7 @@ def test_short_quote_fails_closed():
     assert len(result.results) == 1
     assert result.results[0].matched_ratio == 0.0
     args = ["--source", SOURCE, "--answer", 'The term "epsilon" appears', "--quotes", "--no-color"]
-    assert verbatimeter.main(args) == 1
+    assert verbatimeter.main([*args, "--fail"]) == 1
 
 
 def test_inch_marks_are_not_quote_openers():
@@ -88,4 +89,5 @@ def test_mixed_good_and_bad_quotes_gate_on_any_failure():
     assert result.results[0].differing_tokens == 0
     assert result.results[1].differing_tokens > 0
     args = ["--source", SOURCE, "--answer", answer, "--quotes", "--no-color"]
-    assert verbatimeter.main(args) == 1
+    assert verbatimeter.main(args) == 0
+    assert verbatimeter.main([*args, "--fail"]) == 1

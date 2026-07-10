@@ -123,8 +123,8 @@ def test_cli_quotes_gate_arabic(tmp_path):
     bad = tmp_path / "bad.txt"
     bad.write_text("مكتوب هنا «تفتح يوم الأحد بعد الظهر» فقط.", encoding="utf-8")
     base = ["--source-file", str(src), "--quotes", "--no-color"]
-    assert verbatimeter.main([*base, "--answer-file", str(good)]) == 0
-    assert verbatimeter.main([*base, "--answer-file", str(bad)]) == 1
+    assert verbatimeter.main([*base, "--answer-file", str(good), "--fail"]) == 0
+    assert verbatimeter.main([*base, "--answer-file", str(bad), "--fail"]) == 1
 
 
 def test_cli_quotes_gate_hindi(tmp_path):
@@ -135,5 +135,5 @@ def test_cli_quotes_gate_hindi(tmp_path):
     bad = tmp_path / "bad.txt"
     bad.write_text("सूचना पट्ट पर लिखा है “दोपहर बारह बजे बंद रहता है”।", encoding="utf-8")
     base = ["--source-file", str(src), "--quotes", "--no-color"]
-    assert verbatimeter.main([*base, "--answer-file", str(good)]) == 0
-    assert verbatimeter.main([*base, "--answer-file", str(bad)]) == 1
+    assert verbatimeter.main([*base, "--answer-file", str(good), "--fail"]) == 0
+    assert verbatimeter.main([*base, "--answer-file", str(bad), "--fail"]) == 1

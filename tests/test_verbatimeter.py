@@ -434,9 +434,9 @@ def test_cli_quotes_gate(tmp_path):
     bad = tmp_path / "bad.txt"
     bad.write_text('It says "the employer must provide verbal memos daily" here.', encoding="utf-8")
     base = ["--source-file", str(src), "--quotes", "--no-color"]
-    assert verbatimeter.main([*base, "--answer-file", str(good)]) == 0
-    assert verbatimeter.main([*base, "--answer-file", str(bad)]) == 1
-    assert verbatimeter.main([*base, "--answer-file", str(bad), "--no-fail"]) == 0
+    assert verbatimeter.main([*base, "--answer-file", str(bad)]) == 0
+    assert verbatimeter.main([*base, "--answer-file", str(good), "--fail"]) == 0
+    assert verbatimeter.main([*base, "--answer-file", str(bad), "--fail"]) == 1
 
 
 def test_cli_quotes_gate_fails_when_no_quotes_found(tmp_path):
@@ -445,8 +445,8 @@ def test_cli_quotes_gate_fails_when_no_quotes_found(tmp_path):
     unquoted = tmp_path / "unquoted.txt"
     unquoted.write_text("The employer shall provide written notice.", encoding="utf-8")
     args = ["--source-file", str(src), "--answer-file", str(unquoted), "--quotes", "--no-color"]
-    assert verbatimeter.main(args) == 1
-    assert verbatimeter.main([*args, "--no-fail"]) == 0
+    assert verbatimeter.main(args) == 0
+    assert verbatimeter.main([*args, "--fail"]) == 1
 
 
 def test_cli_inputs_are_literal_without_file_flags(tmp_path, monkeypatch, capsys):

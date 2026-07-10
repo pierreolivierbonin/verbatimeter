@@ -56,10 +56,10 @@ Run from this directory (`cd examples/basics`):
   verbatimeter --source-file source.txt --answer-file answer.txt --quotes --json
   cat answer.txt | verbatimeter --source-file source.txt --answer-file - --quotes
   ```
-  The third form (no `--quotes`) scans the whole answer, like demo 05. With
-  `--quotes`, the exit code is non-zero when any quotation contains differing
-  tokens or when no quotations are found (a CI gate; add `--no-fail` to disable).
-  Whole-text scope always exits 0.
+  The third form (no `--quotes`) scans the whole answer, like demo 05. Every
+  scope exits 0 by default; add `--fail` to use `--quotes` as a CI gate whose
+  exit code becomes non-zero when any quotation contains differing tokens or
+  when no quotations are found.
 
 Colors are shown in a real terminal; when output is piped or redirected they
 auto-disable (honoring `NO_COLOR`).

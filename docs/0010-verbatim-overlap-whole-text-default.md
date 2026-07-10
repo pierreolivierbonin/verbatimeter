@@ -43,6 +43,10 @@ Two secondary issues surfaced with the previous design:
 6. **Exit-code gate scoped to quotes.** The CI gate (non-zero exit on differing
    tokens) fires only under `scope="quotes"`, where differing = a fabricated
    quotation. Whole-text scope is a measurement and always exits 0.
+   *Amended 2026-07-09:* the gate is now opt-in via `--fail` (replacing the
+   opt-out `--no-fail`). Every scope is a measurement by default; the quotes
+   scope's job is to highlight and score the quoted spans, and exit-code
+   gating is a CI feature the caller requests explicitly.
 
 ## Consequences
 
