@@ -337,6 +337,23 @@ Bug reports with runnable reproductions and bug-fix PRs are encouraged; the
 scope is deliberately narrow and defended. See
 [CONTRIBUTING.md](https://github.com/pierreolivierbonin/verbatimeter/blob/main/CONTRIBUTING.md) before proposing features.
 
+## Citation
+
+If you use verbatimeter in your research, please cite it
+([CITATION.cff](https://github.com/pierreolivierbonin/verbatimeter/blob/main/CITATION.cff)
+has the authoritative metadata, and GitHub's *Cite this repository* button
+generates APA and BibTeX from it):
+
+```bibtex
+@software{bonin_verbatimeter,
+  author = {Bonin, Pierre-Olivier},
+  title  = {verbatimeter: deterministic verification of groundedness
+            in AI-generated text},
+  url    = {https://github.com/pierreolivierbonin/verbatimeter},
+  year   = {2026}
+}
+```
+
 ## License
 
 [MIT](https://github.com/pierreolivierbonin/verbatimeter/blob/main/LICENSE). Bundled third-party material is credited in
