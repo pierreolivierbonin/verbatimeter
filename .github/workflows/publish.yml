@@ -30,3 +30,20 @@ jobs:
           name: dist
           path: dist/
       - uses: pypa/gh-action-pypi-publish@release/v1
+
+  badge:
+    needs: publish
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: badges
+      - run: |
+          version="${GITHUB_REF_NAME#v}"
+          curl -fsSL --retry 3 "https://img.shields.io/badge/pypi-v${version//-/--}-blue" -o pypi-version-badge.svg
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add pypi-version-badge.svg
+          git diff --cached --quiet || { git commit -m "chore: badge for ${GITHUB_REF_NAME}" && git push; }

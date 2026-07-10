@@ -14,7 +14,7 @@
 
 <p align="center">
   <a href="https://github.com/pierreolivierbonin/verbatimeter/actions/workflows/ci.yml"><img src="https://github.com/pierreolivierbonin/verbatimeter/actions/workflows/ci.yml/badge.svg?branch=main" alt="CI"></a>
-  <a href="https://pypi.org/project/verbatimeter/"><img src="https://img.shields.io/pypi/v/verbatimeter?style=flat" alt="PyPI version"></a>
+  <a href="https://pypi.org/project/verbatimeter/"><img src="https://raw.githubusercontent.com/pierreolivierbonin/verbatimeter/badges/pypi-version-badge.svg" alt="PyPI version"></a>
   <a href="https://pypi.org/project/verbatimeter/"><img src="https://img.shields.io/pypi/pyversions/verbatimeter?style=flat" alt="Supported Python versions"></a>
   <a href="https://github.com/pierreolivierbonin/verbatimeter/blob/main/LICENSE"><img src="https://img.shields.io/badge/license-MIT-2ea043" alt="License: MIT"></a>
 </p>
