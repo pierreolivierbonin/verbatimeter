@@ -1,6 +1,7 @@
 from .align import contiguous_alignment, lcs_alignment
 from .core import (
     AnnotatedAnswer,
+    AnnotatedStream,
     CheckResult,
     Result,
     WordSpan,
@@ -28,5 +29,6 @@ __all__ = [
     "Result",
     "WordSpan",
     "AnnotatedAnswer",
+    "AnnotatedStream",
     "main",
 ]

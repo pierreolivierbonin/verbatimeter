@@ -1,3 +1,10 @@
+<p align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="docs/assets/logo-dark.svg">
+    <img src="docs/assets/logo-light.svg" alt="verbatimeter — the name above a source line aligned to its matched (green) and differing (red) runs" width="340">
+  </picture>
+</p>
+
 # verbatimeter
 
 Deterministically measure how much of a text **reuses** a source. Two readings
@@ -18,9 +25,13 @@ No judge model, no embeddings, no sampling: run it twice, get the same numbers.
   with verbatim quotations, then verify them. A quotation whose words aren't in
   the source is a caught fabrication — a deterministic *lower bound* on grounding
   failures — and the exit code gates your pipeline.
-- **English and French** — Unicode-normalized matching (NFC), and quotation
-  extraction that understands straight `"…"`, curly `“…”`, guillemet `« … »`,
-  and low-9 `„…“` conventions.
+- **Multilingual** — any language that separates words with spaces:
+  Unicode-normalized (NFC), case-folded matching, and quotation extraction
+  across straight `"…"`, curly `“…”`, guillemet `« … »`, and low-9 `„…“`
+  conventions. Validated by test suites in English, French, Spanish,
+  Portuguese, German, Russian, Hindi, Bengali, Indonesian, Urdu, and Arabic
+  (unvocalized). Unsegmented scripts (Chinese, Japanese, Thai) are not yet
+  supported.
 - **Lightweight and offline** — one runtime dependency (`tiktoken`), with the
   vocabulary bundled: no network access, ever.
 - **Portable** — three surfaces for the same check: the `@verify` decorator over
@@ -32,6 +43,32 @@ It is built on a longest-common-subsequence (LCS) alignment ported from the
 Scope is deliberately narrow: it verifies, highlights, and collects statistics on
 text you provide. Extracting text from PDFs, Word documents, HTML, etc. is out of
 scope — do that yourself with whatever library you prefer, then pass the text in.
+
+## Demo
+
+<p align="center"><img src="docs/assets/streaming-demo.svg" alt="verbatimeter verifying a streamed GPT-4o-mini answer word by word: source-verbatim words in green, the model's own words in red" width="720"></p>
+
+What you're watching — a replay of a real captured run, not a mock-up. A
+minimal RAG agent
+([`examples/rag_streaming_example.py`](examples/rag_streaming_example.py))
+retrieved two passages from the *Attention Is All You Need* abstract, asked
+`gpt-4o-mini` *"What architecture does the paper propose, and why is it faster
+to train?"*, and instructed it to reuse the context's exact wording. The
+`@verify` decorator checks the stream as it arrives and prints each word in
+its final color:
+
+- **green** — reproduced verbatim from the retrieved context, in contiguous
+  runs of ≥ 3 words (the opening lift runs 16 words unbroken);
+- **red** — the model's own wording: its connective phrases, and one giveaway
+  in the middle of a green run — `requires`, where the source says
+  *requiring*. A single conjugated word, caught live;
+- the stats line prints when the stream completes: 71% of the answer's words
+  are verbatim reuse, and 15 of its 59 tokens differ from the source.
+
+The model never sees verbatimeter — it just answers the question; every
+measurement is post-hoc, deterministic, and judge-free. Replay it yourself
+with `python examples/rag_streaming_example.py` (needs `pip install openai`
+and `OPENAI_API_KEY`).
 
 ## Install
 
@@ -94,7 +131,9 @@ verbatimeter --source source.txt --source-file --answer answer.txt --answer-file
   must not pass the gate silently). Disable with `--no-fail`. Whole-text scope is a
   measurement and always exits 0.
 - `--no-color` for plain output (auto-disables on non-TTY / when `NO_COLOR` is
-  set); `--json` emits machine-readable results.
+  set); `--palette classic|colorblind|neon|mono` picks the highlight colors
+  (also a `palette=` keyword on `render_words`, `render_result`, and `verify`);
+  `--json` emits machine-readable results.
 
 ## Library
 
@@ -137,6 +176,13 @@ answer comes back as a `str` subclass carrying the full measurement on
 `.result` (a `CheckResult`), so existing string-handling code is unaffected and
 the numbers are always one attribute away. Omit `scope="quotes"` to check the
 whole answer.
+
+**Streaming works automatically**: if the decorated function returns an
+iterator of text chunks (`yield delta` from your provider's stream), the
+chunks pass through unchanged for your own UI while each word is printed in
+its final color as it arrives — green verbatim, red not — with the full
+`CheckResult` attached as `.result` once the stream completes. See
+[`examples/rag_streaming_example.py`](examples/rag_streaming_example.py).
 
 Integrating with a retrieval-augmented-generation agent? See
 [docs/rag-agent-integration.md](docs/rag-agent-integration.md).

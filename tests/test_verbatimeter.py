@@ -194,6 +194,26 @@ def test_render_no_color_and_color():
     assert "\033[32m" in out and "\033[31m" in out
 
 
+def test_palette_presets_across_surfaces():
+    words = check("alpha beta gamma unrelated words here", "alpha beta gamma delta").words
+    out = render_words(words, use_color=True, palette="colorblind")
+    assert "\033[34m" in out and "\033[38;5;208m" in out
+
+    sink = io.StringIO()
+
+    @verify(source="alpha beta gamma delta", use_color=True, palette="mono", file=sink)
+    def gen():
+        yield "alpha beta "
+        yield "gamma unrelated"
+
+    "".join(gen())
+    assert "\033[1malpha" in sink.getvalue()
+    assert "\033[7munrelated" in sink.getvalue()
+
+    args = ["--source", "alpha beta gamma delta", "--answer", "alpha beta gamma"]
+    assert verbatimeter.main([*args, "--palette", "neon", "--no-color"]) == 0
+
+
 def test_render_empty_messages():
     assert "No quotations" in render_result(CheckResult("quotes", []), use_color=False)
     assert "Empty input" in render_result(CheckResult("all", []), use_color=False)
@@ -255,6 +275,55 @@ def test_decorator_static_source():
     assert isinstance(out, AnnotatedAnswer)
     assert out.result.total_differing_tokens == 0
     assert "matched" in sink.getvalue()
+
+
+def test_decorator_streams_generator_with_live_color():
+    from verbatimeter import AnnotatedStream
+
+    sink = io.StringIO()
+
+    @verify(source="alpha beta gamma delta epsilon zeta", use_color=True, file=sink)
+    def gen():
+        for piece in ["alpha ", "beta ", "gam", "ma ", "and ", "then ", "delta ", "epsilon zeta"]:
+            yield piece
+
+    out = gen()
+    assert isinstance(out, AnnotatedStream)
+    text = "".join(out)
+    assert text == "alpha beta gamma and then delta epsilon zeta"
+    assert out.result.results[0].matched_ratio == 6 / 8
+    printed = sink.getvalue()
+    assert "\033[32malpha\033[0m" in printed
+    assert "\033[31mand\033[0m" in printed
+    assert "matched=75%" in printed
+
+
+def test_decorator_stream_quiet_mode():
+    sink = io.StringIO()
+
+    @verify(source="alpha beta gamma delta", print_stats=False, file=sink)
+    def gen():
+        yield "alpha "
+        yield "beta gamma"
+
+    out = gen()
+    assert "".join(out) == "alpha beta gamma"
+    assert sink.getvalue() == ""
+    assert out.result.total_differing_tokens == 0
+
+
+def test_decorator_stream_quotes_scope_reports_post_hoc():
+    sink = io.StringIO()
+
+    @verify(source="alpha beta gamma delta", scope="quotes", use_color=False, file=sink)
+    def gen():
+        yield 'It says "alpha '
+        yield 'beta gamma" here.'
+
+    out = gen()
+    assert "".join(out) == 'It says "alpha beta gamma" here.'
+    assert out.result.results[0].matched_ratio == 1.0
+    assert "matched=100%" in sink.getvalue()
 
 
 def test_decorator_quiet_mode_still_returns_result():

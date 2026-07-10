@@ -8,7 +8,7 @@ def clean_text(text: str) -> list[str]:
     text = unicodedata.normalize("NFC", text)
     cleaned = "".join(
         ch for ch in text if ch not in _STRIP and not unicodedata.category(ch).startswith("P")
-    ).lower()
+    ).casefold()
     return cleaned.split()
 
 

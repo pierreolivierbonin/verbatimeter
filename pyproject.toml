@@ -12,6 +12,7 @@ keywords = [
     "verbatim",
     "text-reuse",
     "paraphrase",
+    "multilingual",
     "extractiveness",
     "hallucination",
     "llm",
@@ -25,6 +26,17 @@ classifiers = [
     "Environment :: Console",
     "Intended Audience :: Developers",
     "Intended Audience :: Science/Research",
+    "Natural Language :: Arabic",
+    "Natural Language :: Bengali",
+    "Natural Language :: English",
+    "Natural Language :: French",
+    "Natural Language :: German",
+    "Natural Language :: Hindi",
+    "Natural Language :: Indonesian",
+    "Natural Language :: Portuguese",
+    "Natural Language :: Russian",
+    "Natural Language :: Spanish",
+    "Natural Language :: Urdu",
     "Operating System :: OS Independent",
     "Programming Language :: Python :: 3",
     "Programming Language :: Python :: 3.10",
@@ -60,7 +72,7 @@ path = "src/verbatimeter/__init__.py"
 line-length = 100
 
 [tool.ty.src]
-exclude = ["examples/openai_example.py"]
+exclude = ["examples/openai_example.py", "examples/rag_streaming_example.py"]
 
 [tool.ty.environment]
 extra-paths = ["profiling"]

@@ -28,3 +28,5 @@ as ADRs (Architecture Decision Records). Each file is one decision, tagged
 | [ADR-0013](0013-explicit-inputs-single-tokenizer.md) | Explicit CLI file flags (no path sniffing); `--encoding` removed, bundled tokenizer only | Accepted |
 | [ADR-0014](0014-functools-cache-memoization.md) | Compute-once values memoized with `functools.cache` | Accepted |
 | [ADR-0015](0015-decorator-always-returns-result.md) | `verify` always returns the annotated answer; `return_result` removed, `print_stats` is the quiet-mode switch | Accepted |
+| [ADR-0016](0016-spaced-script-multilingual-tier.md) | Spaced-script multilingual tier (11 validated languages); `casefold` replaces `lower` | Accepted |
+| [ADR-0017](0017-automatic-streaming-verification.md) | `verify` auto-detects streamed (iterator) answers: live-coloured pass-through, `.result` on completion | Accepted |

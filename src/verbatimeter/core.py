@@ -4,6 +4,7 @@ import json
 import os
 import re
 import sys
+from collections.abc import Iterator
 from dataclasses import asdict, dataclass, field
 from functools import cache, wraps
 
@@ -197,10 +198,15 @@ def check_answer(
     return CheckResult(scope=scope, results=results)
 
 
-_GREEN = "\033[32m"
-_RED = "\033[31m"
 _RESET = "\033[0m"
 _DIM = "\033[2m"
+
+_PALETTES = {
+    "classic": ("\033[32m", "\033[31m"),
+    "colorblind": ("\033[34m", "\033[38;5;208m"),
+    "neon": ("\033[92m", "\033[95m"),
+    "mono": ("\033[1m", "\033[7m"),
+}
 
 
 def _resolve_color(use_color: bool | None, stream=None) -> bool:
@@ -214,19 +220,22 @@ def _paint(text: str, code: str, use_color: bool) -> str:
     return f"{code}{text}{_RESET}" if use_color and code else text
 
 
-def render_words(words: list[WordSpan], use_color: bool) -> str:
+def render_words(words: list[WordSpan], use_color: bool, palette: str = "classic") -> str:
+    matched, differing = _PALETTES[palette]
     out = []
     for span in words:
         if span.verbatim is True:
-            out.append(_paint(span.text, _GREEN, use_color))
+            out.append(_paint(span.text, matched, use_color))
         elif span.verbatim is False:
-            out.append(_paint(span.text, _RED, use_color))
+            out.append(_paint(span.text, differing, use_color))
         else:
             out.append(span.text)
     return " ".join(out)
 
 
-def render_result(check_result: CheckResult, use_color: bool | None = None, stream=None) -> str:
+def render_result(
+    check_result: CheckResult, use_color: bool | None = None, stream=None, palette: str = "classic"
+) -> str:
     use_color = _resolve_color(use_color, stream)
     scope = check_result.scope
     if not check_result.results:
@@ -235,7 +244,7 @@ def render_result(check_result: CheckResult, use_color: bool | None = None, stre
     lines = []
     for i, r in enumerate(check_result.results, 1):
         label = f"[{i}] " if scope == "quotes" else ""
-        lines.append(label + render_words(r.words, use_color))
+        lines.append(label + render_words(r.words, use_color, palette))
         stats = (
             f"    matched={r.matched_ratio:.0%}  differing_tokens={r.differing_tokens}/{r.total_tokens}"
             f"  longest_run={r.longest_fragment}  rouge_l={r.rouge_l:.3f}"
@@ -261,6 +270,70 @@ class AnnotatedAnswer(str):
         return obj
 
 
+class AnnotatedStream:
+    result: CheckResult | None
+
+    def __init__(self, chunks, source, **config):
+        self._chunks = chunks
+        self._source = source
+        self._config = config
+        self.result = None
+
+    def __iter__(self):
+        cfg = self._config
+        live = cfg["print_stats"] and cfg["scope"] == "all" and cfg["mode"] == "contiguous"
+        out = cfg["file"] or sys.stdout
+        use_color = _resolve_color(cfg["use_color"], out)
+        hold = cfg["ngram"] - 1
+        answer = ""
+        printed = 0
+        for chunk in self._chunks:
+            answer += chunk
+            yield chunk
+            head = answer[: answer.rfind(" ") + 1]
+            if not live or not head.strip():
+                continue
+            words = check(
+                head, self._source, ngram=cfg["ngram"], count_tokens=cfg["count_tokens"]
+            ).words
+            clean = [k for k, span in enumerate(words) if span.verbatim is not None]
+            boundary = clean[-hold] if len(clean) > hold else 0
+            if boundary > printed:
+                print(
+                    render_words(words[printed:boundary], use_color, cfg["palette"]),
+                    end=" ",
+                    file=out,
+                    flush=True,
+                )
+                printed = boundary
+        self.result = check_answer(
+            answer,
+            self._source,
+            scope=cfg["scope"],
+            ngram=cfg["ngram"],
+            mode=cfg["mode"],
+            count_tokens=cfg["count_tokens"],
+        )
+        if live:
+            words = check(
+                answer, self._source, ngram=cfg["ngram"], count_tokens=cfg["count_tokens"]
+            ).words
+            print(render_words(words[printed:], use_color, cfg["palette"]), file=out)
+            for r in self.result.results:
+                stats = (
+                    f"    matched={r.matched_ratio:.0%}  differing_tokens={r.differing_tokens}/{r.total_tokens}"
+                    f"  longest_run={r.longest_fragment}  rouge_l={r.rouge_l:.3f}"
+                )
+                print(_paint(stats, _DIM, use_color), file=out)
+        elif cfg["print_stats"]:
+            print(
+                render_result(
+                    self.result, use_color=cfg["use_color"], stream=out, palette=cfg["palette"]
+                ),
+                file=out,
+            )
+
+
 def verify(
     source: str | None = None,
     *,
@@ -270,6 +343,7 @@ def verify(
     mode: str = "contiguous",
     count_tokens=None,
     use_color: bool | None = None,
+    palette: str = "classic",
     print_stats: bool = True,
     file=None,
 ):
@@ -281,7 +355,22 @@ def verify(
             answer = fn(*args, **kwargs)
             arguments = sig.bind(*args, **kwargs).arguments
             resolved = arguments.get(source_arg, kwargs.get(source_arg, source))
-            if resolved is None or not isinstance(answer, str):
+            if resolved is None:
+                return answer
+            if isinstance(answer, Iterator):
+                return AnnotatedStream(
+                    answer,
+                    resolved,
+                    scope=scope,
+                    ngram=ngram,
+                    mode=mode,
+                    count_tokens=count_tokens,
+                    use_color=use_color,
+                    palette=palette,
+                    print_stats=print_stats,
+                    file=file,
+                )
+            if not isinstance(answer, str):
                 return answer
             result = check_answer(
                 answer,
@@ -293,7 +382,10 @@ def verify(
             )
             if print_stats:
                 stream = file or sys.stdout
-                print(render_result(result, use_color=use_color, stream=stream), file=stream)
+                print(
+                    render_result(result, use_color=use_color, stream=stream, palette=palette),
+                    file=stream,
+                )
             return AnnotatedAnswer(answer, result)
 
         return wrapper
@@ -330,6 +422,7 @@ def _build_parser() -> argparse.ArgumentParser:
     )
     p.add_argument("--subsequence", action="store_true")
     p.add_argument("--ngram", type=int, default=3)
+    p.add_argument("--palette", choices=sorted(_PALETTES), default="classic")
     p.add_argument("--no-color", action="store_true")
     p.add_argument("--json", action="store_true")
     p.add_argument("--no-fail", action="store_true")
@@ -353,7 +446,9 @@ def main(argv: list[str] | None = None) -> int:
             r_dict["longest_fragment"] = r.longest_fragment
         print(json.dumps(payload, indent=2))
     else:
-        print(render_result(result, use_color=False if args.no_color else None))
+        print(
+            render_result(result, use_color=False if args.no_color else None, palette=args.palette)
+        )
 
     failed = not result.results or result.total_differing_tokens > 0
     gate = scope == "quotes" and not args.no_fail and failed
