@@ -13,11 +13,12 @@
 </p>
 
 LLMs fabricate, and they fabricate fluently — an answer that claims to be
-grounded in a source cannot be taken on trust. verbatimeter verifies the
-claim: give it an AI-generated text and the source it should be grounded in,
-and it shows, word for word, what came from the source and what the model
-introduced. The measurement is deterministic — no judge model, no embeddings,
-no sampling. The same inputs produce the same numbers, every time.
+grounded in a source cannot be taken on trust. verbatimeter is a minimalist,
+deterministic verifier for AI-generated text: it measures how grounded a text
+is in its source as verbatim reuse (contiguous matching) or verbatim
+paraphrasing (LCS), showing word for word what came from the source and what
+the model introduced. No judge model, no embeddings, no sampling — the same
+inputs produce the same numbers every time, in research or in production.
 
 For RAG agents, verification is one decorator line. Every answer — streamed
 or not — comes back highlighted and measured:
