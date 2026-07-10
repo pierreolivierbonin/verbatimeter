@@ -9,6 +9,19 @@ generated answer and the text it should be grounded in: every reused word is
 highlighted, every differing token is counted. No judge model, no embeddings,
 no sampling — run it twice, get the same numbers.
 
+**Checking how grounded your RAG agent is?** That is the center of the design.
+One decorator line, and every answer — streamed or not — comes back
+highlighted and measured, with the numbers attached:
+
+```python
+@verify(source_arg="context", scope="quotes")
+def generate(question, context): ...
+```
+
+The same check is available as importable library functions and as a CLI, so
+the measurement in your notebook, your CI gate, and your terminal is
+identical — reliable and transparent by construction.
+
 One word-level alignment, two readings:
 
 - **Verbatim reuse** (default) — word-for-word copying, in contiguous runs.
@@ -30,8 +43,6 @@ What it's built for:
   Japanese, Thai) are not yet supported.
 - **Lightweight and offline** — one runtime dependency (`tiktoken`), with the
   vocabulary bundled: no network access, ever.
-- **Portable** — the same check as a `@verify` decorator over your `generate()`
-  function, as importable library functions, or as a CLI.
 
 Scope is deliberately narrow: it verifies, highlights, and collects statistics on
 text you provide. Extracting text from PDFs, Word documents, HTML, and other
