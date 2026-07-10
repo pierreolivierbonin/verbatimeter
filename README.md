@@ -2,8 +2,6 @@
   <img src="https://raw.githubusercontent.com/pierreolivierbonin/verbatimeter/main/docs/assets/logo.svg" alt="verbatimeter — source word boxes aligned to a generation's word boxes, matched pairs linked in green with a red differing run, above the name in letterspaced capitals" width="320">
 </p>
 
-<p align="center"><em>Deterministic verification of groundedness for AI-generated text</em></p>
-
 <p align="center">
   <a href="#getting-started">Getting started</a> ·
   <a href="#usage">Usage</a> ·
