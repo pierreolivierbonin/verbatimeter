@@ -50,11 +50,11 @@ Run from this directory (`cd examples/basics`):
 - **CLI** — quick experiments (the demos 01–04 check quotations, so pass
   `--quotes`; without it the CLI scans the whole answer, like demo 05):
   ```
-  verbatimeter --source source.txt --source-file --answer answer.txt --answer-file --quotes
-  verbatimeter --source source.txt --source-file --answer answer.txt --answer-file --quotes --subsequence
-  verbatimeter --source source.txt --source-file --answer answer.txt --answer-file
-  verbatimeter --source source.txt --source-file --answer answer.txt --answer-file --quotes --json
-  cat answer.txt | verbatimeter --source source.txt --source-file --answer - --quotes
+  verbatimeter --source-file source.txt --answer-file answer.txt --quotes
+  verbatimeter --source-file source.txt --answer-file answer.txt --quotes --subsequence
+  verbatimeter --source-file source.txt --answer-file answer.txt
+  verbatimeter --source-file source.txt --answer-file answer.txt --quotes --json
+  cat answer.txt | verbatimeter --source-file source.txt --answer-file - --quotes
   ```
   The third form (no `--quotes`) scans the whole answer, like demo 05. With
   `--quotes`, the exit code is non-zero when any quotation contains differing

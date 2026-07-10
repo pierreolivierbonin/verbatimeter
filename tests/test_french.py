@@ -56,7 +56,7 @@ def test_french_cli_quotes_gate(tmp_path):
         "Elle cite « une indemnité de départ imposable au taux fédéral » ici.",
         encoding="utf-8",
     )
-    base = ["--source", str(src), "--source-file", "--answer-file", "--quotes", "--no-color"]
-    assert verbatimeter.main([*base, "--answer", str(good)]) == 0
-    assert verbatimeter.main([*base, "--answer", str(bad)]) == 1
-    assert verbatimeter.main([*base, "--answer", str(bad), "--no-fail"]) == 0
+    base = ["--source-file", str(src), "--quotes", "--no-color"]
+    assert verbatimeter.main([*base, "--answer-file", str(good)]) == 0
+    assert verbatimeter.main([*base, "--answer-file", str(bad)]) == 1
+    assert verbatimeter.main([*base, "--answer-file", str(bad), "--no-fail"]) == 0

@@ -393,13 +393,14 @@ def verify(
     return decorator
 
 
-def _read(value: str, force_file: bool) -> str:
-    if value == "-":
+def _read(literal: str | None, path: str | None) -> str:
+    if literal is not None:
+        return literal
+    assert path is not None
+    if path == "-":
         return sys.stdin.read()
-    if force_file:
-        with open(value, "r", encoding="utf-8") as f:
-            return f.read()
-    return value
+    with open(path, "r", encoding="utf-8") as f:
+        return f.read()
 
 
 def _build_parser() -> argparse.ArgumentParser:
@@ -411,10 +412,12 @@ def _build_parser() -> argparse.ArgumentParser:
     from . import __version__
 
     p.add_argument("--version", action="version", version=f"%(prog)s {__version__}")
-    p.add_argument("--source", required=True)
-    p.add_argument("--answer", required=True)
-    p.add_argument("--source-file", action="store_true", help="read --source as a UTF-8 file path")
-    p.add_argument("--answer-file", action="store_true", help="read --answer as a UTF-8 file path")
+    source_group = p.add_mutually_exclusive_group(required=True)
+    source_group.add_argument("--source", help="the source as literal text")
+    source_group.add_argument("--source-file", help="path to read the source from (- for stdin)")
+    answer_group = p.add_mutually_exclusive_group(required=True)
+    answer_group.add_argument("--answer", help="the answer as literal text")
+    answer_group.add_argument("--answer-file", help="path to read the answer from (- for stdin)")
     p.add_argument(
         "--quotes",
         action="store_true",

@@ -122,9 +122,9 @@ def test_cli_quotes_gate_arabic(tmp_path):
     good.write_text("مكتوب هنا «في الساعة التاسعة صباحا وتغلق» فقط.", encoding="utf-8")
     bad = tmp_path / "bad.txt"
     bad.write_text("مكتوب هنا «تفتح يوم الأحد بعد الظهر» فقط.", encoding="utf-8")
-    base = ["--source", str(src), "--source-file", "--answer-file", "--quotes", "--no-color"]
-    assert verbatimeter.main([*base, "--answer", str(good)]) == 0
-    assert verbatimeter.main([*base, "--answer", str(bad)]) == 1
+    base = ["--source-file", str(src), "--quotes", "--no-color"]
+    assert verbatimeter.main([*base, "--answer-file", str(good)]) == 0
+    assert verbatimeter.main([*base, "--answer-file", str(bad)]) == 1
 
 
 def test_cli_quotes_gate_hindi(tmp_path):
@@ -134,6 +134,6 @@ def test_cli_quotes_gate_hindi(tmp_path):
     good.write_text("सूचना पट्ट पर लिखा है “सुबह नौ बजे खुलता है”।", encoding="utf-8")
     bad = tmp_path / "bad.txt"
     bad.write_text("सूचना पट्ट पर लिखा है “दोपहर बारह बजे बंद रहता है”।", encoding="utf-8")
-    base = ["--source", str(src), "--source-file", "--answer-file", "--quotes", "--no-color"]
-    assert verbatimeter.main([*base, "--answer", str(good)]) == 0
-    assert verbatimeter.main([*base, "--answer", str(bad)]) == 1
+    base = ["--source-file", str(src), "--quotes", "--no-color"]
+    assert verbatimeter.main([*base, "--answer-file", str(good)]) == 0
+    assert verbatimeter.main([*base, "--answer-file", str(bad)]) == 1

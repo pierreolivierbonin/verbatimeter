@@ -85,7 +85,7 @@ token counter (see [Tokenizer](#tokenizer)).
 ## Quickstart
 
 No files, no quotation marks — paste this from any directory (`--source` /
-`--answer` take literal text; add `--source-file` / `--answer-file` for paths):
+`--answer` take literal text; `--source-file` / `--answer-file` take paths):
 
 ```bash
 verbatimeter \
@@ -105,16 +105,16 @@ To try the quotation/hallucination check instead, add `--quotes` and put a
 ## CLI
 
 ```
-verbatimeter --source source.txt --source-file --answer answer.txt --answer-file
-verbatimeter --source "raw source text" --answer - < answer.txt
-verbatimeter --source source.txt --source-file --answer answer.txt --answer-file --quotes
-verbatimeter --source source.txt --source-file --answer answer.txt --answer-file --ngram 5
+verbatimeter --source-file source.txt --answer-file answer.txt
+verbatimeter --source "raw source text" --answer-file - < answer.txt
+verbatimeter --source-file source.txt --answer-file answer.txt --quotes
+verbatimeter --source-file source.txt --answer-file answer.txt --ngram 5
 ```
 
-- `--source` / `--answer` values are **literal text**; `--source-file` /
-  `--answer-file` read them as UTF-8 file paths instead, and `--answer -` reads
-  from stdin. Interpretation never depends on what happens to exist in the
-  working directory.
+- `--source` / `--answer` take **literal text**; `--source-file` /
+  `--answer-file` take UTF-8 file paths, with `-` for stdin. Each pair is
+  mutually exclusive, so interpretation never depends on what happens to exist
+  in the working directory.
 - **Default scope is the whole text** (green = verbatim, red = not in the source).
   `--quotes` restricts the check to quoted spans (the hallucination-check use) —
   straight `"…"`, curly `“…”`, French guillemets `« … »` (inner padding spaces

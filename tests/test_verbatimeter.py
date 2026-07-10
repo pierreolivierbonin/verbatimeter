@@ -422,7 +422,7 @@ def test_cli_all_scope_never_gates(tmp_path):
     src.write_text("the employer shall provide written notice to each worker", encoding="utf-8")
     ans = tmp_path / "a.txt"
     ans.write_text("the employer must fabricate everything here", encoding="utf-8")
-    args = ["--source", str(src), "--source-file", "--answer", str(ans), "--answer-file"]
+    args = ["--source-file", str(src), "--answer-file", str(ans)]
     assert verbatimeter.main([*args, "--no-color"]) == 0
 
 
@@ -433,10 +433,10 @@ def test_cli_quotes_gate(tmp_path):
     good.write_text('It says "the employer shall provide written notice" here.', encoding="utf-8")
     bad = tmp_path / "bad.txt"
     bad.write_text('It says "the employer must provide verbal memos daily" here.', encoding="utf-8")
-    base = ["--source", str(src), "--source-file", "--answer-file", "--quotes", "--no-color"]
-    assert verbatimeter.main([*base, "--answer", str(good)]) == 0
-    assert verbatimeter.main([*base, "--answer", str(bad)]) == 1
-    assert verbatimeter.main([*base, "--answer", str(bad), "--no-fail"]) == 0
+    base = ["--source-file", str(src), "--quotes", "--no-color"]
+    assert verbatimeter.main([*base, "--answer-file", str(good)]) == 0
+    assert verbatimeter.main([*base, "--answer-file", str(bad)]) == 1
+    assert verbatimeter.main([*base, "--answer-file", str(bad), "--no-fail"]) == 0
 
 
 def test_cli_quotes_gate_fails_when_no_quotes_found(tmp_path):
@@ -444,16 +444,7 @@ def test_cli_quotes_gate_fails_when_no_quotes_found(tmp_path):
     src.write_text("the employer shall provide written notice to each worker", encoding="utf-8")
     unquoted = tmp_path / "unquoted.txt"
     unquoted.write_text("The employer shall provide written notice.", encoding="utf-8")
-    args = [
-        "--source",
-        str(src),
-        "--source-file",
-        "--answer",
-        str(unquoted),
-        "--answer-file",
-        "--quotes",
-        "--no-color",
-    ]
+    args = ["--source-file", str(src), "--answer-file", str(unquoted), "--quotes", "--no-color"]
     assert verbatimeter.main(args) == 1
     assert verbatimeter.main([*args, "--no-fail"]) == 0
 
@@ -467,3 +458,17 @@ def test_cli_inputs_are_literal_without_file_flags(tmp_path, monkeypatch, capsys
     verbatimeter.main(["--source", "alpha beta gamma delta", "--answer", "answer.txt", "--json"])
     payload = json.loads(capsys.readouterr().out)
     assert payload["results"][0]["text"] == "answer.txt"
+
+
+def test_cli_literal_and_file_options_are_mutually_exclusive(capsys):
+    import pytest
+
+    with pytest.raises(SystemExit) as exc:
+        verbatimeter.main(["--source", "a b c", "--source-file", "x.txt", "--answer", "a b c"])
+    assert exc.value.code == 2
+
+
+def test_cli_answer_file_dash_reads_stdin(monkeypatch):
+    monkeypatch.setattr("sys.stdin", io.StringIO("alpha beta gamma"))
+    args = ["--source", "alpha beta gamma delta", "--answer-file", "-", "--no-color"]
+    assert verbatimeter.main(args) == 0

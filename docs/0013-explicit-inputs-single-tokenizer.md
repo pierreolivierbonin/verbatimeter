@@ -27,6 +27,11 @@ introduced to eliminate, making "works offline" true only for the default.
    `--answer-file` read the value as a UTF-8 file path; `--answer -` reads
    stdin. The `os.path.isfile` sniffing is removed. Input interpretation never
    depends on the working directory's contents.
+   *Amended 2026-07-09:* the file options now take the path directly and are
+   mutually exclusive with their literal counterparts
+   (`--source-file source.txt`, not `--source source.txt --source-file`);
+   stdin is `--answer-file -`. The boolean-modifier shape was a vestige of the
+   sniffing era.
 2. **`--encoding` is removed, along with the `encoding` parameter** on `check`,
    `check_answer`, and `verify`. The bundled `cl100k_base` encoder is the only
    built-in token counter, and the `count_tokens` callable (`str -> int`)
