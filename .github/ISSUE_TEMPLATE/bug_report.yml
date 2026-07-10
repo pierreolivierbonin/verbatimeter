@@ -36,10 +36,3 @@ body:
       description: Output of `verbatimeter --version`.
     validations:
       required: true
-  - type: input
-    id: environment
-    attributes:
-      label: Python version and OS
-      placeholder: Python 3.12, Windows 11
-    validations:
-      required: true

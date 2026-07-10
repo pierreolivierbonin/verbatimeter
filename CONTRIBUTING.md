@@ -23,10 +23,9 @@ r = check("the answer text that misbehaves", "the source text")
 print(r.matched_ratio, r.fragments)
 ```
 
-along with the expected result, the actual result, the output of
-`verbatimeter --version`, and your Python version and OS. The bug-report form
-requires these fields. Reports without a runnable reproduction will be sent
-back for one before triage.
+along with the expected result, the actual result, and the output of
+`verbatimeter --version`. The bug-report form requires these fields. Reports
+without a runnable reproduction will be sent back for one before triage.
 
 ## Development setup
 
