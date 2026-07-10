@@ -1,7 +1,12 @@
+import os
+
+from dotenv import load_dotenv
 from openai import OpenAI
 
 from verbatimeter import verify
 from verbatimeter.align import clean_text
+
+load_dotenv()
 
 KNOWLEDGE = [
     (
@@ -31,13 +36,15 @@ SYSTEM_PROMPT = (
     "of the context wherever you can. No quotation marks, no markdown."
 )
 
-client = OpenAI()
+client = OpenAI(api_key=os.environ["OPENAI_API_KEY"])
 
 
 def retrieve(query, k=2):
     query_words = set(clean_text(query))
     ranked = sorted(
-        KNOWLEDGE, key=lambda chunk: len(query_words & set(clean_text(chunk[1]))), reverse=True
+        KNOWLEDGE,
+        key=lambda chunk: len(query_words & set(clean_text(chunk[1]))),
+        reverse=True,
     )
     return ranked[:k]
 

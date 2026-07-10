@@ -78,6 +78,7 @@ exclude = ["examples/openai_example.py", "examples/rag_streaming_example.py"]
 
 [tool.ty.environment]
 extra-paths = ["profiling"]
+python = "./.venv"
 
 [tool.ruff.lint.per-file-ignores]
 "examples/**" = ["E402", "E731"]

@@ -31,10 +31,12 @@ What it's built for:
 
 - **Grounding verification** — how much of an answer, summary, or report comes
   directly from its source, and how much is verbatim-paraphrased from it.
-- **Hallucination checking** (`--quotes`) — have the model support its answer
-  with verbatim quotations and verify each one; add `--fail` to gate a
-  pipeline on fabrications. A deterministic *lower bound* on grounding
-  failures.
+- **Quotation verification** (`--quotes`) — have the model support its answer
+  with verbatim quotations and verify each one; a quotation that differs from
+  the source is a caught fabrication. Add `--fail` to gate a pipeline on it.
+  This is lexical matching, not semantic: it *helps* detect hallucinations —
+  a deterministic *lower bound* on grounding failures — but it does not judge
+  unquoted claims or faithful paraphrase.
 - **Multilingual** — any language that separates words with spaces, with
   Unicode-normalized, case-folded matching. Validated on eleven languages,
   from English and French to Hindi, Urdu, and Arabic; quotation extraction
@@ -99,7 +101,7 @@ word in `--answer` — say `solely` to `partly` — and rerun: only that word tu
 up in the differing color. (PowerShell: use backtick line-continuation and the
 same quoting.)
 
-To try the quotation/hallucination check instead, add `--quotes` and put a
+To try the quotation check instead, add `--quotes` and put a
 `"…"` span in the answer. Runnable samples live in
 [`examples/basics/`](examples/basics/).
 
@@ -117,7 +119,7 @@ verbatimeter --source-file source.txt --answer-file answer.txt --ngram 5
   mutually exclusive, so interpretation never depends on what happens to exist
   in the working directory.
 - **Default scope is the whole text** (green = verbatim, red = not in the source).
-  `--quotes` restricts the check to quoted spans (the hallucination-check use) —
+  `--quotes` restricts the check to quoted spans (the quotation-verification use) —
   straight `"…"`, curly `“…”`, French guillemets `« … »` (inner padding spaces
   stripped), and low-9 `„…“`.
 - Matching is **contiguous** by default: a word counts as verbatim only inside
