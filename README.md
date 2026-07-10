@@ -4,23 +4,23 @@
 
 # verbatimeter
 
-Deterministically measure how much of a text **reuses** a source. Give it a
-generated answer and the text it should be grounded in: every reused word is
-highlighted, every differing token is counted. No judge model, no embeddings,
-no sampling — run it twice, get the same numbers.
+LLMs fabricate, and they fabricate fluently — an answer that claims to be
+grounded in a source cannot be taken on trust. verbatimeter verifies the
+claim: give it an AI-generated text and the source it should be grounded in,
+and it shows, word for word, what came from the source and what the model
+introduced. The measurement is deterministic — no judge model, no embeddings,
+no sampling. The same inputs produce the same numbers, every time.
 
-**Checking how grounded your RAG agent is?** That is the center of the design.
-One decorator line, and every answer — streamed or not — comes back
-highlighted and measured, with the numbers attached:
+For RAG agents, verification is one decorator line. Every answer — streamed
+or not — comes back highlighted and measured:
 
 ```python
 @verify(source_arg="context", scope="quotes")
 def generate(question, context): ...
 ```
 
-The same check is available as importable library functions and as a CLI, so
-the measurement in your notebook, your CI gate, and your terminal is
-identical — reliable and transparent by construction.
+The same check is available as library functions and as a CLI: the numbers in
+a notebook, a CI gate, and a terminal are identical.
 
 One word-level alignment, two readings:
 
@@ -31,9 +31,9 @@ One word-level alignment, two readings:
 
 What it's built for:
 
-- **Source-use evaluation** — how much of a summary, answer, or document comes
-  directly from a reference, and how much is verbatim-paraphrased from it.
-- **Hallucination gating** (`--quotes`) — instruct an LLM to support its answer
+- **Grounding verification** — how much of an answer, summary, or report comes
+  directly from its source, and how much is verbatim-paraphrased from it.
+- **Hallucination gating** (`--quotes`) — have the model support its answer
   with verbatim quotations, verify each one, and fail the pipeline on
   fabrications. A deterministic *lower bound* on grounding failures.
 - **Multilingual** — any language that separates words with spaces, with
