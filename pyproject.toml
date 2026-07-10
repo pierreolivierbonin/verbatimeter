@@ -1,7 +1,7 @@
 [project]
 name = "verbatimeter"
 dynamic = ["version"]
-description = "Deterministically measure how much of a source text a generation reuses, verbatim or verbatim-paraphrased — highlight matched vs. differing words, count differing tokens, and optionally verify an LLM's quotations."
+description = "Deterministically verify how grounded an AI-generated text is in its source — highlight verbatim and verbatim-paraphrased reuse word by word, count differing tokens, and gate pipelines on fabricated quotations. No judge model, no network."
 readme = "README.md"
 requires-python = ">=3.10"
 license = "MIT"
@@ -10,6 +10,8 @@ authors = [{ name = "Pierre-Olivier Bonin" }]
 dependencies = ["tiktoken>=0.5"]
 keywords = [
     "verbatim",
+    "groundedness",
+    "verification",
     "text-reuse",
     "paraphrase",
     "multilingual",
