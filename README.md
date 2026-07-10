@@ -8,7 +8,9 @@
   <a href="#usage">Usage</a> ·
   <a href="#enforcement">Enforcement</a> ·
   <a href="#performance">Performance</a> ·
-  <a href="#design">Design</a>
+  <a href="#design">Design</a> ·
+  <a href="#contributing">Contributing</a> ·
+  <a href="#license">License</a>
 </p>
 
 LLMs fabricate, and they fabricate fluently — an answer that claims to be
@@ -323,3 +325,14 @@ verbatim from:
 > Vaswani, A., Shazeer, N., Parmar, N., Uszkoreit, J., Jones, L., Gomez, A. N.,
 > Kaiser, Ł., & Polosukhin, I. (2017). *Attention Is All You Need.* Advances in
 > Neural Information Processing Systems 30. arXiv:[1706.03762](https://arxiv.org/abs/1706.03762).
+
+## Contributing
+
+Bug reports with runnable reproductions and bug-fix PRs are encouraged; the
+scope is deliberately narrow and defended. See
+[CONTRIBUTING.md](CONTRIBUTING.md) before proposing features.
+
+## License
+
+[MIT](LICENSE). Bundled third-party material is credited in
+[THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md).
