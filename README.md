@@ -13,7 +13,7 @@
 </p>
 
 LLMs fabricate, and they fabricate fluently — an answer that claims to be
-grounded in a source cannot be taken on trust. verbatimeter is a minimalist,
+grounded in a source cannot be taken on trust. `verbatimeter` is a minimalist,
 deterministic verifier for AI-generated text: it measures how grounded a text
 is in its source as verbatim reuse (contiguous matching) or verbatim
 paraphrasing (LCS), showing word for word what came from the source and what
@@ -50,7 +50,7 @@ its final color:
 - the stats line prints when the stream completes: 79% of the answer's words
   are verbatim reuse, and 10 of its 55 tokens differ from the source.
 
-The model never sees verbatimeter — it just answers the question; every
+The model never sees `verbatimeter` — it just answers the question; every
 measurement is post-hoc, deterministic, and judge-free. Replay it yourself
 with `python examples/openai_rag_streaming_example.py` (needs
 `pip install openai python-dotenv` and `OPENAI_API_KEY` in the environment or
@@ -271,7 +271,7 @@ identify exactly which quotation broke and which words were fabricated.
 
 ## Performance
 
-verbatimeter is a word-level dynamic-programming alignment. Let **S** be the
+`verbatimeter` is a word-level dynamic-programming alignment. Let **S** be the
 number of words in the source and **C** the number of words in the text being
 checked (the whole answer with `scope="all"`, or the total quoted words with
 `scope="quotes"`).
