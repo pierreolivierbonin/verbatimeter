@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="docs/assets/logo.svg" alt="verbatimeter — source word boxes linked to a generation's word boxes: matched pairs connected in green, one differing box in red" width="360">
+  <img src="docs/assets/logo.svg" alt="verbatimeter — a pixel-art V in green blocks with one red glitch block, above the name in letterspaced capitals" width="240">
 </p>
 
 LLMs fabricate, and they fabricate fluently — an answer that claims to be
