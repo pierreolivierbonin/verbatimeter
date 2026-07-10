@@ -4,16 +4,10 @@
 
 <p align="center">
   <a href="#demo">Demo</a> ·
-  <a href="#install">Install</a> ·
-  <a href="#quickstart">Quickstart</a> ·
-  <a href="#cli">CLI</a> ·
+  <a href="#getting-started">Getting started</a> ·
+  <a href="#usage">Usage</a> ·
   <a href="#enforcement">Enforcement</a> ·
-  <a href="#accessibility">Accessibility</a> ·
-  <a href="#library">Library</a> ·
-  <a href="#decorator">Decorator</a> ·
-  <a href="#tokenizer">Tokenizer</a> ·
   <a href="#performance">Performance</a> ·
-  <a href="#sample-text">Sample text</a> ·
   <a href="#design">Design</a>
 </p>
 
@@ -92,7 +86,7 @@ with `python examples/openai_rag_streaming_example.py` (needs
 `pip install openai python-dotenv` and `OPENAI_API_KEY` in the environment or
 a `.env` file).
 
-## Install
+## Getting started
 
 ```
 pip install verbatimeter
@@ -100,8 +94,6 @@ pip install verbatimeter
 
 `tiktoken` is the only runtime dependency, and it is only needed for the default
 token counter (see [Tokenizer](#tokenizer)).
-
-## Quickstart
 
 No files, no quotation marks — paste this from any directory (`--source` /
 `--answer` take literal text; `--source-file` / `--answer-file` take paths):
@@ -121,7 +113,11 @@ To try the quotation check instead, add `--quotes` and put a
 `"…"` span in the answer. Runnable samples live in
 [`examples/basics/`](examples/basics/).
 
-## CLI
+## Usage
+
+The same check runs on three surfaces; pick by context.
+
+### CLI
 
 ```
 verbatimeter --source-file source.txt --answer-file answer.txt
@@ -153,6 +149,95 @@ verbatimeter --source-file source.txt --answer-file answer.txt --ngram 5
 - `--no-color` for plain output; `--palette` picks the highlight colors (see
   [Accessibility](#accessibility)); `--json` emits machine-readable results.
 
+### Library
+
+```python
+from verbatimeter import check, check_answer, render_result
+
+# check one text against a source (verbatim n-gram overlap):
+r = check(candidate_text, source_text, ngram=3)
+print(r.matched_ratio, r.longest_fragment, r.fragments)
+
+# or scope over an answer — the whole thing, or just its "…" quotations:
+result = check_answer(answer, source, scope="all")      # or scope="quotes"
+print(render_result(result))
+print(result.total_differing_tokens)
+```
+
+`check(...)` returns a `Result`:
+
+| Field | Meaning |
+| --- | --- |
+| `words` | per-word verbatim flags — drives the highlighting |
+| `fragments` / `longest_fragment` | the verbatim runs, and the longest run's word count |
+| `matched_ratio` | fraction of the text's words matched in the source |
+| `differing_tokens` / `total_tokens` | tokens that differ, against the text's size |
+| `source_segment` | the smallest source window containing every matched word |
+| `rouge_l` | ROUGE-L F1 between the text and `source_segment` — fidelity to the region it drew from |
+
+### Decorator
+
+```python
+from verbatimeter import verify
+
+@verify(source_arg="context", scope="quotes")
+def generate(prompt, context=None):
+    return call_your_llm(prompt, context)
+
+generate("...", context=retrieved_passages)
+```
+
+The wrapped function's return value is the answer. The source is resolved from
+a static `source=` and/or a runtime argument — the runtime value wins.
+Highlighting and stats print as a side effect (pass `print_stats=False` for a
+quiet mode), and the answer comes back as a `str` subclass with the full
+measurement attached as `.result`: existing string-handling code is unaffected,
+and the numbers are one attribute away. Omit `scope="quotes"` to check the
+whole answer.
+
+**Streaming works automatically**: if the decorated function returns an
+iterator of text chunks (`yield delta` from your provider's stream), the
+chunks pass through unchanged for your own UI while each word is printed in
+its final color as it arrives — green verbatim, red not — with the full
+`CheckResult` attached as `.result` once the stream completes. See
+[`examples/openai_rag_streaming_example.py`](examples/openai_rag_streaming_example.py).
+
+Integrating with a retrieval-augmented-generation agent? See
+[docs/rag-agent-integration.md](docs/rag-agent-integration.md).
+
+### Tokenizer
+
+The differing-token count uses `tiktoken` (encoding `cl100k_base`) by default.
+The vocabulary is bundled with the package (see
+[THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md)), so token counting works fully
+offline — the package never touches the network. To count with a different
+tokenizer — or avoid `tiktoken` entirely — pass a `count_tokens` callable
+(`str -> int`) to `check`, `check_answer`, or `verify`:
+
+```python
+check_answer(answer, source, count_tokens=lambda text: len(text.split()))
+```
+
+When `count_tokens` is supplied, `tiktoken` is never imported.
+
+### Accessibility
+
+The highlight colors are configurable on every surface — `--palette` on the
+CLI, and a `palette=` keyword on `render_words`, `render_result`, and
+`verify` (including streamed output):
+
+| Preset | Matched / differing | For |
+| --- | --- | --- |
+| `classic` | green / red | the default |
+| `colorblind` | blue / orange | red–green color-vision deficiency |
+| `neon` | bright green / magenta | dark terminals and screen recordings |
+| `mono` | bold / inverse video | no color reliance at all |
+
+Color is never load-bearing: the stats lines carry every number as plain text,
+and `--json` exposes the full result for machine consumption. Rendering honors
+the [`NO_COLOR`](https://no-color.org/) convention, auto-disables color when
+output is not a terminal, and `--no-color` forces plain text.
+
 ## Enforcement
 
 Measure by default — enforce when asked. Every surface reports and exits 0
@@ -183,95 +268,6 @@ if answer.result.total_differing_tokens > 0:
 Because the check is deterministic, the gate never flakes: the same answer
 produces the same verdict every time, and when it fails, the highlighted words
 identify exactly which quotation broke and which words were fabricated.
-
-## Accessibility
-
-The highlight colors are configurable on every surface — `--palette` on the
-CLI, and a `palette=` keyword on `render_words`, `render_result`, and
-`verify` (including streamed output):
-
-| Preset | Matched / differing | For |
-| --- | --- | --- |
-| `classic` | green / red | the default |
-| `colorblind` | blue / orange | red–green color-vision deficiency |
-| `neon` | bright green / magenta | dark terminals and screen recordings |
-| `mono` | bold / inverse video | no color reliance at all |
-
-Color is never load-bearing: the stats lines carry every number as plain text,
-and `--json` exposes the full result for machine consumption. Rendering honors
-the [`NO_COLOR`](https://no-color.org/) convention, auto-disables color when
-output is not a terminal, and `--no-color` forces plain text.
-
-## Library
-
-```python
-from verbatimeter import check, check_answer, render_result
-
-# check one text against a source (verbatim n-gram overlap):
-r = check(candidate_text, source_text, ngram=3)
-print(r.matched_ratio, r.longest_fragment, r.fragments)
-
-# or scope over an answer — the whole thing, or just its "…" quotations:
-result = check_answer(answer, source, scope="all")      # or scope="quotes"
-print(render_result(result))
-print(result.total_differing_tokens)
-```
-
-`check(...)` returns a `Result`:
-
-| Field | Meaning |
-| --- | --- |
-| `words` | per-word verbatim flags — drives the highlighting |
-| `fragments` / `longest_fragment` | the verbatim runs, and the longest run's word count |
-| `matched_ratio` | fraction of the text's words matched in the source |
-| `differing_tokens` / `total_tokens` | tokens that differ, against the text's size |
-| `source_segment` | the smallest source window containing every matched word |
-| `rouge_l` | ROUGE-L F1 between the text and `source_segment` — fidelity to the region it drew from |
-
-## Decorator
-
-```python
-from verbatimeter import verify
-
-@verify(source_arg="context", scope="quotes")
-def generate(prompt, context=None):
-    return call_your_llm(prompt, context)
-
-generate("...", context=retrieved_passages)
-```
-
-The wrapped function's return value is the answer. The source is resolved from
-a static `source=` and/or a runtime argument — the runtime value wins.
-Highlighting and stats print as a side effect (pass `print_stats=False` for a
-quiet mode), and the answer comes back as a `str` subclass with the full
-measurement attached as `.result`: existing string-handling code is unaffected,
-and the numbers are one attribute away. Omit `scope="quotes"` to check the
-whole answer.
-
-**Streaming works automatically**: if the decorated function returns an
-iterator of text chunks (`yield delta` from your provider's stream), the
-chunks pass through unchanged for your own UI while each word is printed in
-its final color as it arrives — green verbatim, red not — with the full
-`CheckResult` attached as `.result` once the stream completes. See
-[`examples/openai_rag_streaming_example.py`](examples/openai_rag_streaming_example.py).
-
-Integrating with a retrieval-augmented-generation agent? See
-[docs/rag-agent-integration.md](docs/rag-agent-integration.md).
-
-## Tokenizer
-
-The differing-token count uses `tiktoken` (encoding `cl100k_base`) by default.
-The vocabulary is bundled with the package (see
-[THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md)), so token counting works fully
-offline — the package never touches the network. To count with a different
-tokenizer — or avoid `tiktoken` entirely — pass a `count_tokens` callable
-(`str -> int`) to `check`, `check_answer`, or `verify`:
-
-```python
-check_answer(answer, source, count_tokens=lambda text: len(text.split()))
-```
-
-When `count_tokens` is supplied, `tiktoken` is never imported.
 
 ## Performance
 
@@ -313,15 +309,6 @@ quadratically; contiguous n-gram matching could be reduced to O(S + C) with
 rolling hashes or a suffix automaton (noted as a future option in
 [ADR-0010](docs/0010-verbatim-overlap-whole-text-default.md)).
 
-## Sample text
-
-All example text in this README and throughout [`examples/`](examples/) is quoted
-verbatim from:
-
-> Vaswani, A., Shazeer, N., Parmar, N., Uszkoreit, J., Jones, L., Gomez, A. N.,
-> Kaiser, Ł., & Polosukhin, I. (2017). *Attention Is All You Need.* Advances in
-> Neural Information Processing Systems 30. arXiv:[1706.03762](https://arxiv.org/abs/1706.03762).
-
 ## Design
 
 Architecture decisions are recorded as ADRs under [`docs/`](docs/), alongside the
@@ -329,3 +316,10 @@ Architecture decisions are recorded as ADRs under [`docs/`](docs/), alongside th
 longest-common-subsequence (LCS) algorithm ported from the
 [Canada-Labour-Research-Assistant](https://github.com/pierreolivierbonin/Canada-Labour-Research-Assistant)
 project.
+
+All example text in this README and throughout [`examples/`](examples/) is quoted
+verbatim from:
+
+> Vaswani, A., Shazeer, N., Parmar, N., Uszkoreit, J., Jones, L., Gomez, A. N.,
+> Kaiser, Ł., & Polosukhin, I. (2017). *Attention Is All You Need.* Advances in
+> Neural Information Processing Systems 30. arXiv:[1706.03762](https://arxiv.org/abs/1706.03762).
