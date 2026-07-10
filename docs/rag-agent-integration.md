@@ -81,7 +81,7 @@ programmatic control.
 ### Option A — the decorator (drop-in)
 
 Wrap your generation function. The source is resolved from the runtime `context`
-argument (set `source_arg` to whatever your function calls it). Highlighting +
+argument (set `source_arg` to the parameter name your function uses). Highlighting +
 stats print automatically (pass `print_stats=False` for a quiet mode), and the
 answer comes back still usable as a plain string, with the `CheckResult`
 attached as `.result`.

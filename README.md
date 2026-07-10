@@ -38,8 +38,9 @@ It is built on a longest-common-subsequence (LCS) alignment ported from the
 [Canada-Labour-Research-Assistant](https://github.com/pierreolivierbonin/Canada-Labour-Research-Assistant) project.
 
 Scope is deliberately narrow: it verifies, highlights, and collects statistics on
-text you provide. Extracting text from PDFs, Word documents, HTML, etc. is out of
-scope — do that yourself with whatever library you prefer, then pass the text in.
+text you provide. Extracting text from PDFs, Word documents, HTML, and other
+formats is out of scope — perform the extraction with the library of your
+choice, then pass the resulting text in.
 
 ## Demo
 
