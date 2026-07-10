@@ -53,6 +53,7 @@ classifiers = [
 Homepage = "https://github.com/pierreolivierbonin/verbatimeter"
 Repository = "https://github.com/pierreolivierbonin/verbatimeter"
 Issues = "https://github.com/pierreolivierbonin/verbatimeter/issues"
+Changelog = "https://github.com/pierreolivierbonin/verbatimeter/releases"
 
 [dependency-groups]
 dev = ["pytest", "ruff", "ty", "pre-commit"]
