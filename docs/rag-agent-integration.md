@@ -31,9 +31,20 @@ per-quote verdict: which words are verbatim, how many tokens differ
 display highlighting  ·  gate the answer  ·  re-prompt if fabricated
 ```
 
-`verbatimeter` checks the model's **quotations** against the retrieved context.
-It does not judge paraphrased claims — its job is: *of the text the model put in
-quotation marks, how much was actually copied verbatim from the sources.*
+The diagram shows the strictest reading — quotation verification — but the
+same alignment supports three measurements, and a RAG agent can use any of
+them:
+
+- **Quotation verification** (`scope="quotes"`) — *of the text the model put
+  in quotation marks, how much was actually copied verbatim from the
+  sources.* The main recipe below; a differing quotation is a caught
+  fabrication you can gate on.
+- **Whole-answer verbatim reuse** (the default, `scope="all"`) — how much of
+  the entire answer is lifted word-for-word from the context, in contiguous
+  runs. An extractiveness measure: no quoting instructions needed.
+- **Verbatim paraphrasing** (`mode="subsequence"`) — see
+  [the section below](#beyond-quotations-verbatim-paraphrasing): the source's
+  own words reused in order but not contiguously.
 
 ## Prerequisites
 
@@ -191,6 +202,39 @@ flags exactly those — a fabricated quotation caught deterministically.
 > verbatimeter (`check(excerpt, source).differing_tokens == 0`) before being
 > pasted here.
 
+## Beyond quotations: verbatim paraphrasing
+
+Quotation verification is the strictest use, but a RAG answer that never
+quotes can still be built almost entirely from the source's own words. That
+is **verbatim paraphrasing** — a narrower, deterministic concept than
+paraphrasing in the traditional sense:
+
+- **Traditional (semantic) paraphrasing** restates the source's *meaning* in
+  *new* words. Judging its faithfulness is an NLI problem — it needs a model,
+  and verbatimeter deliberately does not attempt it.
+- **Verbatim paraphrasing** reuses the source's *own* words, in their
+  original order, but not contiguously: the wording is split up, spread out,
+  and interleaved with new words. Because the signal is lexical, it is
+  measurable exactly, with no judge — the same LCS alignment that powers the
+  contiguous check, minus the run floor.
+
+Switch modes to measure it:
+
+```python
+r = check_answer(answer, context)                      # verbatim reuse (contiguous runs)
+p = check_answer(answer, context, mode="subsequence")  # verbatim paraphrasing (order-only)
+```
+
+Reading the pair: a high contiguous score means word-for-word lifting; a low
+contiguous score with a high subsequence score means the answer is verbatim-
+paraphrased — stitched from the source's vocabulary in source order without
+copying runs; low scores on both mean the answer's wording is mostly the
+model's own (which says nothing about whether its *claims* are faithful —
+that remains NLI territory). Subsequence mode deliberately has no `ngram`
+floor: isolated shared words in order are the signal, not noise, so its
+numbers are a measure of paraphrasing, not verbatim evidence
+([ADR-0011](0011-scope-verbatim-and-paraphrase.md)).
+
 ## Tuning
 
 - **Strictness** — matching is contiguous by default (`ngram=3`: a word counts as
@@ -210,9 +254,13 @@ flags exactly those — a fabricated quotation caught deterministically.
 
 - ✅ Deterministically verifies **quoted** text against the retrieved context and
   quantifies fabrication token-for-token. No model, no API call, no flakiness.
-- ⚠️ It checks quotations, not **paraphrase faithfulness** — a claim stated
-  without quotation marks is not evaluated (that is an NLI / grounding problem,
-  out of scope here).
+- ✅ Measures **verbatim reuse** of the whole answer (contiguous runs) and
+  **verbatim paraphrasing** (`mode="subsequence"`) — the source's own words
+  reused in order but not contiguously.
+- ⚠️ It does not judge **semantic paraphrase faithfulness** — a claim restated
+  in the model's own words is not evaluated for truth against the source (that
+  is an NLI / grounding problem, out of scope here). Verbatim paraphrasing
+  measures wording reuse, not claim correctness.
 - ⚠️ It is **post-hoc**: run it on the completed answer (for streaming, check when
   the stream finishes, or per paragraph).
 - ⚠️ It reports *which passage region* matched (`source_segment`) but not *which
