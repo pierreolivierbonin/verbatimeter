@@ -128,6 +128,14 @@ def test_ngram_floor_enforced():
         check("beta gamma delta", "alpha beta gamma delta", ngram=2)
 
 
+def test_subsequence_mode_skips_ngram_floor():
+    low = check("beta gamma delta", "alpha beta gamma delta", mode="subsequence", ngram=1)
+    default = check("beta gamma delta", "alpha beta gamma delta", mode="subsequence")
+    assert low.matched_ratio == 1.0
+    assert low.matched_ratio == default.matched_ratio
+    assert low.fragments == default.fragments
+
+
 def test_contiguous_is_stricter_than_subsequence():
     source = "the quick brown fox jumps over the lazy dog"
     scrambled = "brown the fox lazy the quick"

@@ -164,7 +164,7 @@ def check(
     mode: Mode = "contiguous",
     count_tokens: TokenCounter = None,
 ) -> Result:
-    if ngram < 3:
+    if mode == "contiguous" and ngram < 3:
         raise ValueError(f"ngram must be >= 3, got {ngram}")
     counter = count_tokens or _tiktoken_count
     candidate_words = clean_text(text)

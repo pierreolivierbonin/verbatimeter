@@ -41,6 +41,10 @@ concepts where the algorithm has only one.
    (`check` raises `ValueError` below it). Shorter runs are coincidence-prone,
    especially with English and French function-word pairs (*of the*, *in a*,
    *de la*, *que le*, *il y*).
+   *Amended 2026-07-12:* the floor is enforced only in contiguous mode, where
+   `ngram` is used. Subsequence mode documents `ngram` as ignored, and
+   validating a parameter that has no effect contradicted that contract —
+   `check(..., mode="subsequence", ngram=1)` now succeeds instead of raising.
 3. **Quotations shorter than `ngram` words fail closed** in the quotes gate:
    they cannot contain the evidentiary unit, so they are unverified, not
    skipped. The documented contract is to instruct the model to quote at least
