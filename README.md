@@ -307,14 +307,23 @@ S (source)  C (cand)        S*C   contiguous   subsequence   ns/(S*C)
       1000       400     400000       14.9ms        65.9ms       37.4
       1000       800     800000       29.9ms       135.5ms       37.4
       4000       400    1600000       53.4ms       263.6ms       33.4
+     40000      4000  160000000     5176.6ms     53195.6ms       32.4
 ```
 
+The last row is not in the default sizes — collect it with
+`benchmark(sizes=[(40000, 4000)])` (the subsequence pass materializes the full
+S × C table, ~1.5 GB at that size).
+
 The `ns/(S·C)` column stays flat as both S and C grow — the O(S·C) time confirmed
-in practice. For typical inputs (a few-thousand-word context, a few-hundred-word
-answer) that is single-digit to tens of milliseconds. Very large sources grow
-quadratically; contiguous n-gram matching could be reduced to O(S + C) with
-rolling hashes or a suffix automaton (noted as a future option in
-[ADR-0010](https://github.com/pierreolivierbonin/verbatimeter/blob/main/docs/0010-verbatim-overlap-whole-text-default.md)).
+in practice, holding through 100× the mid-table size. For typical inputs (a
+few-thousand-word context, a few-hundred-word answer) that is single-digit to
+tens of milliseconds. Very large inputs grow quadratically — the 40000×4000 row
+costs ~5 s contiguous and ~53 s subsequence; contiguous n-gram matching could be
+reduced to O(S + C) with rolling hashes or a suffix automaton (noted as a future
+option in
+[ADR-0010](https://github.com/pierreolivierbonin/verbatimeter/blob/main/docs/0010-verbatim-overlap-whole-text-default.md),
+and implemented by the
+[Rust port](https://github.com/pierreolivierbonin/verbatimeter-rs)).
 
 ## Design
 
