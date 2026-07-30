@@ -17,6 +17,7 @@
   <a href="https://pypi.org/project/verbatimeter/"><img src="https://raw.githubusercontent.com/pierreolivierbonin/verbatimeter/main/docs/assets/pypi-version-badge.svg" alt="PyPI version"></a>
   <a href="https://pypi.org/project/verbatimeter/"><img src="https://img.shields.io/pypi/pyversions/verbatimeter?style=flat" alt="Supported Python versions"></a>
   <a href="https://github.com/pierreolivierbonin/verbatimeter/blob/main/LICENSE"><img src="https://img.shields.io/badge/license-MIT-2ea043" alt="License: MIT"></a>
+  <a href="https://deepwiki.com/pierreolivierbonin/verbatimeter"><img src="https://deepwiki.com/badge.svg" alt="Ask DeepWiki"></a>
 </p>
 
 `verbatimeter` delivers deterministic verification of groundedness by
